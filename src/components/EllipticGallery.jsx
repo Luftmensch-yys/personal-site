@@ -70,12 +70,9 @@ export default function EllipticGallery({ onActiveCardChange, onLeave, showLabel
     })
   }, [centerSlot, onActiveCardChange])
 
-  const handleWheel = useCallback(
-    (event) => {
-      event.preventDefault()
+  const rotateStep = useCallback(
+    (dir) => {
       if (wheelLock.current) return
-
-      const dir = event.deltaY > 0 ? 1 : -1
 
       wheelLock.current = true
       setRotation((prev) => {
@@ -90,13 +87,42 @@ export default function EllipticGallery({ onActiveCardChange, onLeave, showLabel
     [layout.angleStep],
   )
 
+  const handleWheel = useCallback(
+    (event) => {
+      event.preventDefault()
+      const dir = event.deltaY > 0 ? 1 : -1
+      rotateStep(dir)
+    },
+    [rotateStep],
+  )
+
   useEffect(() => {
     const node = rootRef.current
     if (!node) return undefined
 
+    // 手机竖直滑动切换环形导航（替代滚轮）
+    let touchStartY = 0
+    const onTouchStart = (event) => {
+      touchStartY = event.touches[0].clientY
+    }
+    const onTouchMove = (event) => {
+      const y = event.touches[0].clientY
+      const delta = touchStartY - y
+      if (Math.abs(delta) >= 40) {
+        rotateStep(delta > 0 ? 1 : -1)
+        touchStartY = y
+      }
+    }
+
     node.addEventListener('wheel', handleWheel, { passive: false })
-    return () => node.removeEventListener('wheel', handleWheel)
-  }, [handleWheel])
+    node.addEventListener('touchstart', onTouchStart, { passive: true })
+    node.addEventListener('touchmove', onTouchMove, { passive: true })
+    return () => {
+      node.removeEventListener('wheel', handleWheel)
+      node.removeEventListener('touchstart', onTouchStart)
+      node.removeEventListener('touchmove', onTouchMove)
+    }
+  }, [handleWheel, rotateStep])
 
   const slots = OFFSETS
 

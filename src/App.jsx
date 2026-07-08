@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import SiteNav from './components/SiteNav'
 import PageWipe from './components/PageWipe'
@@ -12,6 +12,24 @@ const VIDEO_URL =
 export default function App() {
   const [leaving, setLeaving] = useState(false)
   const { entering, enterDone } = useEnterTransition()
+  const videoRef = useRef(null)
+  const [videoFailed, setVideoFailed] = useState(false)
+
+  useEffect(() => {
+    // iOS / 部分安卓浏览器不会因 autoPlay 属性自动播放，需要显式调用 play()
+    const v = videoRef.current
+    if (!v) return undefined
+    const tryPlay = () => v.play().catch(() => {})
+    tryPlay()
+    // 首屏若仍被拦截，监听首次交互兜底触发播放
+    const onFirstInteract = () => tryPlay()
+    window.addEventListener('touchstart', onFirstInteract, { once: true, passive: true })
+    window.addEventListener('click', onFirstInteract, { once: true })
+    return () => {
+      window.removeEventListener('touchstart', onFirstInteract)
+      window.removeEventListener('click', onFirstInteract)
+    }
+  }, [])
 
   const shellClass = [
     'page-shell relative h-screen w-full overflow-hidden bg-black font-geist',
@@ -33,15 +51,24 @@ export default function App() {
 
   return (
     <div className={shellClass}>
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{ objectPosition: '70% center' }}
-        src={VIDEO_URL}
-      />
+      {/* 视频未加载/加载失败时的兜底背景，避免手机上纯黑或卡住 */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,#3a2f5b_0%,#0a0a10_60%)]" />
+
+      {videoFailed ? null : (
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: '70% center' }}
+          src={VIDEO_URL}
+          onError={() => setVideoFailed(true)}
+        />
+      )}
 
       <PageWipe />
       <SiteNav active="home" onNavigate={() => setLeaving(true)} />
