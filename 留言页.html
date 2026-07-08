@@ -34,10 +34,27 @@
         }
 
         .sticky-compose-form {
-            display: grid;
-            grid-template-columns: 180px 1fr auto;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
-            align-items: start;
+        }
+
+        .sticky-compose-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .sticky-compose-row input {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        @media (max-width: 520px) {
+            .sticky-compose-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
 
         .sticky-compose input,
@@ -239,9 +256,11 @@
     <section class="sticky-compose">
         <h2>贴一张新便签</h2>
         <form class="sticky-compose-form" id="composeForm">
-            <input id="noteName" type="text" name="name" maxlength="20" placeholder="昵称" required>
             <textarea id="noteContent" name="content" maxlength="120" placeholder="想对我说的话…" required></textarea>
-            <button type="submit">贴上墙</button>
+            <div class="sticky-compose-row">
+                <input id="noteName" type="text" name="name" maxlength="20" placeholder="昵称" required>
+                <button type="submit">贴上墙</button>
+            </div>
         </form>
         <p class="sticky-compose-note">提示：留言会保存在云端，所有访客可见。请勿发布不当内容。</p>
     </section>

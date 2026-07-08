@@ -6,8 +6,7 @@ import { goToPage } from '../lib/navigation'
 const COUNT = PROJECT_ITEMS.length
 const SLOT_RANGE = 14
 const OFFSETS = Array.from({ length: SLOT_RANGE * 2 + 1 }, (_, index) => index - SLOT_RANGE)
-const CAROUSEL_TRANSITION = { type: 'tween', duration: 0.5, ease: [0.22, 1, 0.36, 1] }
-const WHEEL_COOLDOWN_MS = 480
+const CAROUSEL_TRANSITION = { type: 'spring', stiffness: 120, damping: 20, mass: 0.6 }
 
 function wrapIndex(index) {
   return ((index % COUNT) + COUNT) % COUNT
@@ -47,7 +46,6 @@ export default function EllipticGallery({ onActiveCardChange, onLeave, showLabel
   const [layout, setLayout] = useState(getLayout)
   const [rotation, setRotation] = useState(0)
   const [activeIndex, setActiveIndex] = useState(0)
-  const wheelLock = useRef(false)
   const rootRef = useRef(null)
 
   useEffect(() => {
@@ -70,47 +68,57 @@ export default function EllipticGallery({ onActiveCardChange, onLeave, showLabel
     })
   }, [centerSlot, onActiveCardChange])
 
-  const rotateStep = useCallback(
-    (dir) => {
-      if (wheelLock.current) return
+  // 滚轮/触摸松手后自动吸附到最近的格子
+  const SNAP_DELAY_MS = 160
+  const WHEEL_SENSITIVITY = 0.0026
+  const TOUCH_SENSITIVITY = 0.004
+  const snapTimer = useRef(null)
 
-      wheelLock.current = true
-      setRotation((prev) => {
-        const currentSlot = Math.round(-prev / layout.angleStep)
-        const nextSlot = currentSlot - dir
-        return -nextSlot * layout.angleStep
-      })
-      window.setTimeout(() => {
-        wheelLock.current = false
-      }, WHEEL_COOLDOWN_MS)
+  const snapNow = useCallback(() => {
+    setRotation((prev) => snapRotation(prev, layout.angleStep))
+  }, [layout.angleStep])
+
+  const scheduleSnap = useCallback(() => {
+    if (snapTimer.current) clearTimeout(snapTimer.current)
+    snapTimer.current = window.setTimeout(snapNow, SNAP_DELAY_MS)
+  }, [snapNow])
+
+  // 连续累加旋转角度，由 framer-motion 的弹簧过渡负责丝滑跟随，停止后自动吸附
+  const nudge = useCallback(
+    (delta) => {
+      setRotation((prev) => prev + delta)
+      scheduleSnap()
     },
-    [layout.angleStep],
+    [scheduleSnap],
   )
 
   const handleWheel = useCallback(
     (event) => {
       event.preventDefault()
-      const dir = event.deltaY > 0 ? 1 : -1
-      rotateStep(dir)
+      nudge(event.deltaY * WHEEL_SENSITIVITY)
     },
-    [rotateStep],
+    [nudge],
   )
 
   useEffect(() => {
     const node = rootRef.current
     if (!node) return undefined
 
-    // 手机竖直滑动切换环形导航（替代滚轮）
-    let touchStartY = 0
+    // 手机竖直滑动：累加位移连续转动，松手后吸附
+    let lastY = 0
+    let touchAccum = 0
     const onTouchStart = (event) => {
-      touchStartY = event.touches[0].clientY
+      lastY = event.touches[0].clientY
+      touchAccum = 0
     }
     const onTouchMove = (event) => {
       const y = event.touches[0].clientY
-      const delta = touchStartY - y
-      if (Math.abs(delta) >= 40) {
-        rotateStep(delta > 0 ? 1 : -1)
-        touchStartY = y
+      const delta = lastY - y
+      lastY = y
+      touchAccum += delta
+      if (Math.abs(touchAccum) >= 8) {
+        nudge(touchAccum * TOUCH_SENSITIVITY)
+        touchAccum = 0
       }
     }
 
@@ -122,7 +130,14 @@ export default function EllipticGallery({ onActiveCardChange, onLeave, showLabel
       node.removeEventListener('touchstart', onTouchStart)
       node.removeEventListener('touchmove', onTouchMove)
     }
-  }, [handleWheel, rotateStep])
+  }, [handleWheel, nudge])
+
+  useEffect(
+    () => () => {
+      if (snapTimer.current) clearTimeout(snapTimer.current)
+    },
+    [],
+  )
 
   const slots = OFFSETS
 
