@@ -57,6 +57,8 @@ function createNoteElement(note) {
   el.style.top = `${note.top}px`;
   el.style.zIndex = String(note.zIndex || 1);
   el.style.transform = `rotate(${note.rotate || 0}deg)`;
+  // 关键：禁止浏览器把手指拖拽解释为页面滚动，否则手机上拖不动便签
+  el.style.touchAction = 'none';
 
   const header = document.createElement('div');
   header.className = 'sticky-header';
@@ -133,7 +135,8 @@ composeForm.addEventListener('submit', async (event) => {
   }
 });
 
-container.addEventListener('mousedown', (event) => {
+// 用 pointer 事件统一支持鼠标 + 触屏 + 触控笔
+container.addEventListener('pointerdown', (event) => {
   dragEl = event.target.closest('.sticky-note');
   if (!dragEl) return;
 
@@ -148,7 +151,7 @@ container.addEventListener('mousedown', (event) => {
   offsetY = event.clientY - rect.top;
 });
 
-document.addEventListener('mousemove', (event) => {
+document.addEventListener('pointermove', (event) => {
   if (!draggedNote) return;
 
   const containerRect = container.getBoundingClientRect();
@@ -180,8 +183,9 @@ function finishDrag() {
   dragEl = null;
 }
 
-document.addEventListener('mouseup', finishDrag);
-document.addEventListener('mouseleave', finishDrag);
+document.addEventListener('pointerup', finishDrag);
+// 手指被系统手势打断（如误触发滚动）时也要结束拖拽
+document.addEventListener('pointercancel', finishDrag);
 
 container.addEventListener('click', (event) => {
   const noteEl = event.target.closest('.sticky-note');
