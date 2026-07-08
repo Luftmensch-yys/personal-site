@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="init.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="site.css">
+    <title>游戏页</title>
+    <style>
+        .game-list {
+            width: min(720px, calc(100% - 48px));
+            margin: 0 auto 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .game-card {
+            display: block;
+            padding: 28px 32px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--panel);
+            color: var(--ink);
+            text-decoration: none;
+            transition: background 0.25s ease, transform 0.25s ease;
+        }
+
+        .game-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .game-card h2 {
+            font-size: 28px;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+
+        .game-card p {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+    </style>
+</head>
+<body class="unified-page game-page">
+    <nav class="site-nav">
+        <a href="index.html" class="site-nav-brand">yiyisa's space</a>
+        <div class="site-nav-links">
+            <a href="index.html">Home</a>
+            <a href="兴趣页.html" class="is-active">Project</a>
+            <a href="个人页.html">About</a>
+            <a href="留言页.html">Contact</a>
+        </div>
+        <button type="button" class="site-nav-toggle" aria-label="Open menu" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+    </nav>
+    <div class="site-nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="兴趣页.html" class="is-active">Project</a>
+        <a href="个人页.html">About</a>
+        <a href="留言页.html">Contact</a>
+    </div>
+    <section class="page-hero">
+        <div class="page-kicker">game worlds / motion</div>
+        <h1 class="page-title">在另一个世界里，故事继续滚动。</h1>
+        <p class="page-desc">收集想反复进入的游戏世界，从角色、场景到那些忘不掉的通关瞬间。</p>
+    </section>
+
+    <div class="game-list">
+        <a href="final-fantasy-vii.html" class="game-card">
+            <h2>FINAL FANTASY VII</h2>
+            <p>粘性大画面与角色介绍，走进米德加与神罗之间的冒险。</p>
+        </a>
+        <a href="女神异闻录5皇家版.html" class="game-card">
+            <h2>女神异闻录5皇家版</h2>
+            <p>悬停探索角色画廊，移动鼠标感受聚光灯与 3D 倾斜效果。</p>
+        </a>
+    </div>
+
+    <script src="site.js"></script>
+    <script src="nav.js"></script>
+</body>
+</html>

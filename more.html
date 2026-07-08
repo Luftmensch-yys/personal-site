@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="init.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="site.css">
+    <title>More</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+        }
+        div{
+            /* border: 3px solid red; */
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            position: fixed;
+            margin-left: -200px;
+            margin-top: -200px;
+        }
+        p{
+            text-align: center;
+            line-height: 400px;
+            font-size: 40px;
+            color: aliceblue;
+        }
+    </style>
+</head>
+<body class="unified-page more-page">
+    <nav class="site-nav">
+        <a href="index.html" class="site-nav-brand">yiyisa's space</a>
+        <div class="site-nav-links">
+            <a href="index.html">Home</a>
+            <a href="兴趣页.html" class="is-active">Project</a>
+            <a href="个人页.html">About</a>
+            <a href="留言页.html">Contact</a>
+        </div>
+        <button type="button" class="site-nav-toggle" aria-label="Open menu" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+    </nav>
+    <div class="site-nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="兴趣页.html" class="is-active">Project</a>
+        <a href="个人页.html">About</a>
+        <a href="留言页.html">Contact</a>
+    </div>
+    <section class="page-hero">
+        <div class="page-kicker">next room / loading</div>
+        <h1 class="page-title">这里暂时还是一片未折好的纸。</h1>
+        <p class="page-desc">后面可以继续扩展成作品集、日记、课程记录，或者任何你想藏进去的小宇宙。</p>
+    </section>
+    <div class="construction-card"><p>还在建设中。。。</p></div>
+    <script src="site.js"></script>
+    <script src="nav.js"></script>
+</body>
+</html>

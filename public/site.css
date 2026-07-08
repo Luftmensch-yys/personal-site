@@ -1,0 +1,181 @@
+:root {
+    --bg: #06060c;
+    --bg-soft: #0a0a12;
+    --ink: #e8eaef;
+    --muted: rgba(232, 234, 239, 0.58);
+    --line: rgba(255, 255, 255, 0.1);
+    --panel: rgba(255, 255, 255, 0.03);
+    --accent: #91defe;
+    --accent-soft: rgba(145, 222, 254, 0.14);
+    --glow-blue: rgba(90, 100, 150, 0.14);
+    --glow-warm: rgba(196, 24, 48, 0.1);
+}
+
+body.unified-page {
+    min-height: 100vh;
+    padding-top: 100px;
+    color: var(--ink);
+    font-family: "Geist", "Microsoft YaHei", sans-serif;
+    background:
+        radial-gradient(ellipse 80% 50% at 50% 100%, var(--glow-blue), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg-soft));
+}
+
+.page-hero {
+    width: min(900px, calc(100% - 48px));
+    margin: 0 auto 48px;
+    padding: 32px 0;
+    text-align: center;
+}
+
+.page-kicker {
+    margin-bottom: 12px;
+    font-size: 12px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.38);
+}
+
+.page-title {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+}
+
+.page-desc {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.85;
+}
+
+#board1, .cards, #container2, .message-board {
+    width: min(720px, calc(100% - 48px));
+    margin: 0 auto 60px;
+    padding: 32px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.message-board {
+    margin-bottom: 80px;
+}
+
+.message-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.message-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.message-field label {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.message-field input,
+.message-field textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #e8eaef;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.message-field input::placeholder,
+.message-field textarea::placeholder {
+    color: rgba(255, 255, 255, 0.28);
+}
+
+.message-field input:focus,
+.message-field textarea:focus {
+    border-color: rgba(145, 222, 254, 0.45);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.message-field textarea {
+    min-height: 160px;
+    resize: vertical;
+}
+
+.message-submit {
+    margin-top: 4px;
+}
+
+.message-submit button {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    background: #fff;
+    color: #06060c;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.message-submit button:hover {
+    transform: scale(1.03);
+}
+
+.message-note {
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.38);
+}
+
+.message-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 32px;
+    z-index: 300;
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(6, 6, 12, 0.92);
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 14px;
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    transition: opacity 0.32s ease, transform 0.32s ease;
+    backdrop-filter: blur(12px);
+}
+
+.message-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.cards {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.card {
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+}
+
+.card img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center;
+}

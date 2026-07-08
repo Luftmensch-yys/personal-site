@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="init.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="site.css">
+    <title>女神异闻录5皇家版 · yiyisa's space</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --mx: 50vw;
+            --my: 50vh;
+        }
+
+        body.p5r-page {
+            overflow-x: hidden;
+            background:
+                radial-gradient(ellipse 70% 50% at 12% 8%, var(--glow-warm), transparent 52%),
+                radial-gradient(ellipse 60% 45% at 88% 92%, var(--glow-blue), transparent 55%),
+                linear-gradient(180deg, var(--bg), var(--bg-soft));
+        }
+
+        .p5r-ambient,
+        .p5r-spotlight,
+        .p5r-grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .p5r-ambient {
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 15% 10%, rgba(196, 24, 48, 0.1) 0%, transparent 55%),
+                radial-gradient(ellipse 60% 50% at 85% 90%, rgba(90, 100, 180, 0.1) 0%, transparent 55%);
+        }
+
+        .p5r-grain {
+            z-index: 40;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        .p5r-spotlight {
+            z-index: 30;
+            background:
+                radial-gradient(circle 320px at var(--mx) var(--my), transparent 0%, rgba(0, 0, 0, 0.55) 100%),
+                radial-gradient(circle 140px at var(--mx) var(--my), rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+        }
+
+        .p5r-header {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8px 32px 36px;
+            text-align: center;
+        }
+
+        .p5r-header h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            line-height: 1.12;
+            color: var(--ink);
+        }
+
+        .p5r-header p {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .p5r-gallery {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 40px 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px 80px;
+        }
+
+        .p5r-card {
+            position: relative;
+            perspective: 900px;
+            opacity: 0;
+            transform: translateY(28px);
+            animation: p5rFadeUp 0.7s ease forwards;
+        }
+
+        @keyframes p5rFadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .p5r-card.is-active { z-index: 50; }
+
+        .p5r-card-inner {
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform, filter;
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .p5r-card-inner img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .p5r-card-light,
+        .p5r-card-glare {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .p5r-card.is-active .p5r-card-light,
+        .p5r-card.is-active .p5r-card-glare { opacity: 1; }
+
+        .p5r-card-glare {
+            background: linear-gradient(
+                125deg,
+                rgba(255, 255, 255, 0) 30%,
+                rgba(255, 255, 255, 0.18) 48%,
+                rgba(255, 255, 255, 0) 62%
+            );
+            mix-blend-mode: overlay;
+        }
+    </style>
+</head>
+<body class="unified-page p5r-page">
+    <nav class="site-nav">
+        <a href="index.html" class="site-nav-brand">yiyisa's space</a>
+        <div class="site-nav-links">
+            <a href="index.html">Home</a>
+            <a href="兴趣页.html" class="is-active">Project</a>
+            <a href="个人页.html">About</a>
+            <a href="留言页.html">Contact</a>
+        </div>
+        <button type="button" class="site-nav-toggle" aria-label="Open menu" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+    </nav>
+    <div class="site-nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="兴趣页.html" class="is-active">Project</a>
+        <a href="个人页.html">About</a>
+        <a href="留言页.html">Contact</a>
+    </div>
+
+    <div class="p5r-ambient"></div>
+    <div class="p5r-spotlight"></div>
+    <div class="p5r-grain"></div>
+
+    <header class="p5r-header">
+        <div class="page-kicker">persona 5 royal</div>
+        <h1>女神异闻录5皇家版</h1>
+        <p>Move to explore · Hover to focus</p>
+    </header>
+
+    <div class="p5r-gallery" id="gallery"></div>
+
+    <script>
+        const IMAGES = [
+            { src: 'img/1.png',  alt: '01' },
+            { src: 'img/2.png',  alt: '02' },
+            { src: 'img/3.png',  alt: '03' },
+            { src: 'img/4.png',  alt: '04' },
+            { src: 'img/5.jpg',  alt: '05' },
+            { src: 'img/6.jpg',  alt: '06' },
+            { src: 'img/7.jpg',  alt: '07' },
+            { src: 'img/8.jpg',  alt: '08' },
+            { src: 'img/9.jpg',  alt: '09' },
+            { src: 'img/10.jpg', alt: '10' },
+            { src: 'img/11.png', alt: '11' },
+        ];
+
+        const MAX_ROTATE = 22;
+        const HOVER_SCALE = 1.08;
+        const LERP = 0.1;
+
+        const gallery = document.getElementById('gallery');
+
+        const cards = IMAGES.map((item, i) => {
+            const el = document.createElement('article');
+            el.className = 'p5r-card';
+            el.style.animationDelay = `${i * 0.06}s`;
+            el.innerHTML = `
+                <div class="p5r-card-inner">
+                    <img src="${item.src}" alt="${item.alt}" draggable="false">
+                    <div class="p5r-card-light"></div>
+                    <div class="p5r-card-glare"></div>
+                </div>
+            `;
+            gallery.appendChild(el);
+
+            return {
+                el,
+                inner: el.querySelector('.p5r-card-inner'),
+                light: el.querySelector('.p5r-card-light'),
+                glare: el.querySelector('.p5r-card-glare'),
+                rx: 0, ry: 0, scale: 1, tz: 0,
+                trx: 0, try: 0, tscale: 1, ttz: 0,
+                active: false,
+            };
+        });
+
+        const mouse = { x: innerWidth / 2, y: innerHeight / 2, tx: innerWidth / 2, ty: innerHeight / 2 };
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+
+        function updateCardLight(light, rx, ry, tilt) {
+            const hlX = 22 + ry * 1.4;
+            const hlY = 18 + rx * 1.4;
+            const shX = 78 - ry * 1.4;
+            const shY = 82 - rx * 1.4;
+            light.style.background = `
+                radial-gradient(ellipse 90% 70% at ${hlX}% ${hlY}%, rgba(255,255,255,${0.18 + tilt * 0.14}) 0%, transparent 58%),
+                radial-gradient(ellipse 90% 70% at ${shX}% ${shY}%, rgba(0,0,0,${0.08 + tilt * 0.12}) 0%, transparent 58%)
+            `;
+        }
+
+        function updateGlare(glare, rx, ry) {
+            const angle = 125 + ry * 1.2 + rx * 0.8;
+            const pos = 42 + ry * 0.6 - rx * 0.4;
+            glare.style.background = `linear-gradient(${angle}deg, transparent ${pos - 14}%, rgba(255,255,255,0.22) ${pos}%, transparent ${pos + 14}%)`;
+        }
+
+        function updateShadow(inner, ry, tilt, active) {
+            if (!active) { inner.style.filter = ''; return; }
+            const x = 6 + ry * 0.4;
+            const y = 14 + tilt * 16;
+            const blur = 24 + tilt * 8;
+            const alpha = 0.28 + tilt * 0.14;
+            inner.style.filter = `drop-shadow(${x}px ${y}px ${blur}px rgba(0,0,0,${alpha}))`;
+        }
+
+        function setTarget(card, e) {
+            const rect = card.el.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const nx = (e.clientX - cx) / (rect.width / 2);
+            const ny = (e.clientY - cy) / (rect.height / 2);
+            const tilt = Math.min(Math.hypot(nx, ny), 1);
+
+            card.trx = -ny * MAX_ROTATE;
+            card.try = nx * MAX_ROTATE;
+            card.tscale = HOVER_SCALE;
+            card.ttz = 40;
+            card._tilt = tilt;
+        }
+
+        function resetTarget(card) {
+            card.trx = 0; card.try = 0; card.tscale = 1; card.ttz = 0;
+            card._tilt = 0;
+        }
+
+        cards.forEach((card) => {
+            card.el.addEventListener('mouseenter', (e) => {
+                cards.forEach((c) => {
+                    c.active = false;
+                    c.el.classList.remove('is-active');
+                    if (c !== card) resetTarget(c);
+                });
+                card.active = true;
+                card.el.classList.add('is-active');
+                setTarget(card, e);
+            });
+
+            card.el.addEventListener('mousemove', (e) => {
+                if (!card.active) return;
+                setTarget(card, e);
+            });
+
+            card.el.addEventListener('mouseleave', () => {
+                card.active = false;
+                card.el.classList.remove('is-active');
+                resetTarget(card);
+                card.light.style.background = '';
+            });
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            mouse.tx = e.clientX;
+            mouse.ty = e.clientY;
+        });
+
+        function tick() {
+            mouse.x = lerp(mouse.x, mouse.tx, LERP);
+            mouse.y = lerp(mouse.y, mouse.ty, LERP);
+
+            document.documentElement.style.setProperty('--mx', `${mouse.x}px`);
+            document.documentElement.style.setProperty('--my', `${mouse.y}px`);
+
+            cards.forEach((card) => {
+                card.rx = lerp(card.rx, card.trx, LERP * 1.4);
+                card.ry = lerp(card.ry, card.try, LERP * 1.4);
+                card.scale = lerp(card.scale, card.tscale, LERP * 1.2);
+                card.tz = lerp(card.tz, card.ttz, LERP * 1.2);
+
+                const tilt = card._tilt || 0;
+                card.inner.style.transform =
+                    `scale(${card.scale}) rotateX(${card.rx}deg) rotateY(${card.ry}deg) translateZ(${card.tz}px)`;
+
+                if (card.active) {
+                    updateCardLight(card.light, card.rx, card.ry, tilt);
+                    updateGlare(card.glare, card.ry, card.rx);
+                }
+
+                updateShadow(card.inner, card.ry, tilt, card.active);
+            });
+
+            requestAnimationFrame(tick);
+        }
+
+        tick();
+    </script>
+    <script src="site.js"></script>
+    <script src="nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="init.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Contact · yiyisa's space</title>
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="site.css">
+    <style>
+        body.message-page {
+            overflow-x: hidden;
+        }
+
+        .sticky-compose {
+            width: min(920px, calc(100% - 48px));
+            margin: 0 auto 20px;
+            padding: 24px 26px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            backdrop-filter: blur(12px);
+        }
+
+        .sticky-compose h2 {
+            margin-bottom: 14px;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .sticky-compose-form {
+            display: grid;
+            grid-template-columns: 180px 1fr auto;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .sticky-compose input,
+        .sticky-compose textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--ink);
+            background: rgba(255, 255, 255, 0.04);
+            outline: none;
+        }
+
+        .sticky-compose input::placeholder,
+        .sticky-compose textarea::placeholder {
+            color: rgba(255, 255, 255, 0.28);
+        }
+
+        .sticky-compose input:focus,
+        .sticky-compose textarea:focus {
+            border-color: rgba(145, 222, 254, 0.45);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .sticky-compose textarea {
+            min-height: 88px;
+            resize: vertical;
+        }
+
+        .sticky-compose button {
+            height: 44px;
+            padding: 0 22px;
+            border: none;
+            border-radius: 10px;
+            background: #fff;
+            color: var(--bg);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .sticky-compose button:hover {
+            transform: translateY(-1px);
+        }
+
+        .sticky-compose-note {
+            margin-top: 10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.38);
+        }
+
+        .messages-container {
+            position: relative;
+            width: min(1200px, calc(100% - 48px));
+            height: min(72vh, 760px);
+            min-height: 520px;
+            margin: 0 auto 48px;
+            padding: 48px 28px;
+            background: var(--panel);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            overflow: auto;
+        }
+
+        .sticky-note {
+            position: absolute;
+            background: linear-gradient(135deg, #ffeb3b 0%, #ffc107 100%);
+            padding: 36px 20px 24px;
+            min-width: 240px;
+            max-width: 360px;
+            border-radius: 4px;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+            box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.18);
+            cursor: grab;
+            user-select: none;
+            z-index: 1;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .sticky-note::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 8px;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 14px;
+            background: #666;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+        }
+
+        .sticky-note:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.28);
+            z-index: 100;
+        }
+
+        .sticky-note.dragging {
+            z-index: 9999 !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.42);
+            cursor: grabbing;
+            transform: rotate(0deg) scale(1.02) !important;
+        }
+
+        .sticky-note.pink { background: linear-gradient(135deg, #f48fb1 0%, #f06292 100%); }
+        .sticky-note.green { background: linear-gradient(135deg, #c5e1a5 0%, #81c784 100%); }
+        .sticky-note.blue { background: linear-gradient(135deg, #bbdefb 0%, #64b5f6 100%); }
+        .sticky-note.purple { background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%); }
+        .sticky-note.orange { background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 100%); }
+
+        .sticky-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+        }
+
+        .sticky-author {
+            font-weight: 700;
+            color: rgba(0, 0, 0, 0.72);
+            font-size: 14px;
+        }
+
+        .sticky-time {
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+        }
+
+        .sticky-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: rgba(0, 0, 0, 0.82);
+            word-break: break-word;
+            padding: 6px 0;
+        }
+
+        .empty-message {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        @media (max-width: 760px) {
+            .sticky-compose-form {
+                grid-template-columns: 1fr;
+            }
+
+            .sticky-compose button {
+                width: 100%;
+            }
+
+            .messages-container {
+                height: 62vh;
+                min-height: 420px;
+            }
+        }
+    </style>
+</head>
+<body class="unified-page message-page">
+    <nav class="site-nav">
+        <a href="index.html" class="site-nav-brand">yiyisa's space</a>
+        <div class="site-nav-links">
+            <a href="index.html">Home</a>
+            <a href="兴趣页.html">Project</a>
+            <a href="个人页.html">About</a>
+            <a href="留言页.html" class="is-active">Contact</a>
+        </div>
+        <button type="button" class="site-nav-toggle" aria-label="Open menu" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+    </nav>
+    <div class="site-nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="兴趣页.html">Project</a>
+        <a href="个人页.html">About</a>
+        <a href="留言页.html" class="is-active">Contact</a>
+    </div>
+
+    <section class="page-hero">
+        <div class="page-kicker">Contact / Message</div>
+        <h1 class="page-title">留言树屋</h1>
+        <p class="page-desc">写一张便签贴上来，可以拖动位置。不需要登录，留言会展示给所有访客。</p>
+    </section>
+
+    <section class="sticky-compose">
+        <h2>贴一张新便签</h2>
+        <form class="sticky-compose-form" id="composeForm">
+            <input id="noteName" type="text" name="name" maxlength="20" placeholder="昵称" required>
+            <textarea id="noteContent" name="content" maxlength="120" placeholder="想对我说的话…" required></textarea>
+            <button type="submit">贴上墙</button>
+        </form>
+        <p class="sticky-compose-note">提示：留言会保存在云端，所有访客可见。请勿发布不当内容。</p>
+    </section>
+
+    <div class="messages-container" id="sticky-container">
+        <div class="empty-message" id="emptyMessage">还没有便签，来贴第一条吧</div>
+    </div>
+
+    <script type="module" src="/src/message-main.js"></script>
+    <script src="site.js"></script>
+    <script src="nav.js"></script>
+</body>
+</html>

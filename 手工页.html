@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="init.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="site.css">
+    <title>手工页</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+/* 第一个盒子 */
+        #box1{
+            /* border: 3px solid blue; */
+            width: 1500px;
+            height: 800px;
+            position: relative;
+            left: 50%;
+            margin-left: -750px;
+        }
+        .book1{
+            /* border: 3px solid red; */
+            position: absolute;
+            width: 1000px;
+            height: 600px;
+            left: 50%;
+            margin-left: -500px;
+            background-image: url(make/book1.png);
+            background-position: center;
+            background-size: cover;
+        }
+        .text1{
+            /* border: 3px solid red; */
+            position: absolute;
+            text-align: center;
+            width: 1000px;
+            left: 50%;
+            margin-left: -500px;
+            top: 670px;
+
+            color: aliceblue;
+            font-size: 30px;
+        }
+        .apple1{
+            /* border: 3px solid green; */
+            width: 380px;
+            height: 380px;
+            position: absolute;
+            top: 120px;
+            left: 370px;
+            background-image: url(make/apple1.png);
+            background-position: center;
+            background-size: cover;
+            transition: all 0.5s;
+        }
+        .apple1:hover{
+            transform: scale(1.09);
+        }
+        .apple2{
+            /* border: 3px solid green; */
+            width: 180px;
+            height: 190px;
+            position: absolute;
+            /* transform: translate(1000px, 200px); */
+            top: 222px;
+            left: 847px;
+            background-image: url(make/apple2.png);
+            background-position: center;
+            background-size: cover;
+            transition: all 0.5s;
+        }
+        .apple2:hover{
+            transform: rotateY(360deg);
+        }
+/* 第二页 */
+        #box2{
+            /* border: 3px solid blue; */
+            width: 1500px;
+            height: 800px;
+            position: relative;
+            left: 50%;
+            margin-left: -750px;
+        }
+        .book2{
+            /* border: 3px solid red; */
+            position: absolute;
+            width: 1000px;
+            height: 600px;
+            left: 50%;
+            margin-left: -500px;
+            background-image: url(make/book2.png);
+            background-position: center;
+            background-size: cover;
+            z-index: 2;
+        }
+        .under{
+            /* border: 3px solid green; */
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            top: 160px;
+            left: 800px;
+            background-image: url(make/lake.gif);
+            background-position: center;
+            background-size: cover;
+        }
+        .text2{
+            /* border: 3px solid red; */
+            position: absolute;
+            text-align: center;
+            width: 1000px;
+            left: 50%;
+            margin-left: -500px;
+            top: 670px;
+
+            color: aliceblue;
+            font-size: 30px;
+        }
+/* 第三页 */
+        #box3{
+            /* border: 3px solid blue; */
+            width: 1500px;
+            height: 800px;
+            position: relative;
+            left: 50%;
+            margin-left: -750px;
+        }
+        .book3{
+            /* border: 3px solid red; */
+            position: absolute;
+            width: 1010px;
+            height: 600px;
+            left: 50%;
+            margin-left: -505px;
+            background-image: url(make/book3.png);
+            background-position: center;
+            background-size: cover;
+            z-index: 1;
+            box-sizing: border-box; 
+        }
+        .text3{
+            /* border: 3px solid red; */
+            position: absolute;
+            text-align: center;
+            width: 1010px;
+            left: 50%;
+            margin-left: -505px;
+            top: 670px;
+            color: aliceblue;
+            font-size: 30px;
+        }
+        .cover{
+            /* border: 3px solid green; */
+            position: absolute;
+            width: 1010px;
+            height: 600px;
+            left: 50%;
+            margin-left: -505px;
+            z-index: 2;
+            /* overflow: hidden; */
+            box-sizing: border-box; 
+        }
+        .pic1{
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 505px;
+            height: 100%; 
+            background-image: url(make/cover.png);
+            background-size: 1010px 600px;
+            background-position: 0 0;
+            transform-origin: left center; 
+            transition: all 1s ease;
+        }
+        .pic2{
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 505px;
+            height: 100%; 
+            background-image: url(make/cover.png);
+            background-size: 1010px 600px;
+            background-position: -505px 0;
+            transform-origin: right center; 
+            transition: all 1s ease;
+        }
+        .cover:hover .pic1{
+            transform: translateX(-60%);
+        }
+        .cover:hover .pic2{
+            transform: translateX(60%);
+        }
+    </style>
+</head>
+<body class="unified-page craft-page">
+    <nav class="site-nav">
+        <a href="index.html" class="site-nav-brand">yiyisa's space</a>
+        <div class="site-nav-links">
+            <a href="index.html">Home</a>
+            <a href="兴趣页.html" class="is-active">Project</a>
+            <a href="个人页.html">About</a>
+            <a href="留言页.html">Contact</a>
+        </div>
+        <button type="button" class="site-nav-toggle" aria-label="Open menu" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+    </nav>
+    <div class="site-nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="兴趣页.html" class="is-active">Project</a>
+        <a href="个人页.html">About</a>
+        <a href="留言页.html">Contact</a>
+    </div>
+    <section class="page-hero">
+        <div class="page-kicker">handmade / tiny theatre</div>
+        <h1 class="page-title">纸、苹果、湖，和手作的小机关。</h1>
+        <p class="page-desc">把原来的手工页面当成三幕剧处理：滚动时一幕幕出现，悬停时元素轻轻打开。</p>
+    </section>
+    <div id="box1">
+        <div class="book1"></div>
+        <div class="apple1"></div>
+        <div class="apple2"></div>
+        <div class="text1">
+            <p>拥有苹果的时候只在意苹果</p>
+        </div>
+    </div>
+    <div id="box2">
+        <div class="book2"></div>
+        <div class="under"></div>
+        <div class="text2">
+            <p>送你一片湖</p>
+        </div>
+    </div>
+    <div id="box3">
+        <div class="cover">
+            <div class="pic pic1"></div><div class="pic pic2"></div>
+        </div>
+        <div class="book3"></div>
+        <div class="text3">根本没有监狱</div>
+    </div>
+    <script src="site.js"></script>
+    <script src="nav.js"></script>
+</body>
+</html>

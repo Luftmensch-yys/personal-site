@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="init.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="site.css">
+    <title>音乐页</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            padding-bottom: 50px;
+        }
+        /* 音乐列表 */
+        #container {
+            width: 1000px;
+            height: 300px;
+            margin: 50px auto 50px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            color: #fff;
+            border-radius: 30px;
+        }
+        #container h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #container p {
+            margin-top: 50px;
+            font-size: 25px;
+            line-height: 1.8;
+        }
+
+        #container2 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 50px; /* 整体卡片（盒子+文字）之间的间距 */
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 40px;
+            /* border: 3px solid green; */
+            background-color: #ffffff57;
+        }
+
+        .music-item {
+            display: flex;
+            flex-direction: column; /* 纵向排列：盒子在上，文字在下 */
+            align-items: center; /* 水平居中 */
+            gap: 15px; /* 盒子和文字之间的间距 */
+            cursor: pointer; /* 鼠标移上去变手型，提示可点击 */
+        }
+
+        .music-item .box {
+            width: 200px;
+            height: 200px;
+            /* border: 3px solid red; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* 隐藏超出盒子的图片部分 */
+            border-radius: 8px; /* 可选：圆角更美观 */
+        }
+        
+        .music-item .box img {
+            width: 100%; /* 图片宽度铺满盒子 */
+            height: 100%; /* 图片高度铺满盒子 */
+            object-fit: cover; /* 保持图片比例，裁剪多余部分 */
+            transition: all 0.3s ease;
+        }
+
+        /* 1. 新增：旋转动画关键帧 */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 2. 新增：旋转类 - 播放时添加 */
+        .rotate {
+            animation: rotate 8s linear infinite; /* 8秒一圈，匀速无限旋转 */
+        }
+
+        .music-text {
+            font-size: 20px;
+            color: #fff;
+            text-align: center;
+            padding: 5px 15px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .music-item:hover .music-text {
+            background: #0c3a5d;
+            color: #fff;
+        }
+
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body class="unified-page music-page">
+    <nav class="site-nav">
+        <a href="index.html" class="site-nav-brand">yiyisa's space</a>
+        <div class="site-nav-links">
+            <a href="index.html">Home</a>
+            <a href="兴趣页.html" class="is-active">Project</a>
+            <a href="个人页.html">About</a>
+            <a href="留言页.html">Contact</a>
+        </div>
+        <button type="button" class="site-nav-toggle" aria-label="Open menu" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+    </nav>
+    <div class="site-nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="兴趣页.html" class="is-active">Project</a>
+        <a href="个人页.html">About</a>
+        <a href="留言页.html">Contact</a>
+    </div>
+
+    <section class="page-hero">
+        <div class="page-kicker">sound shelf / memory</div>
+        <h1 class="page-title">音乐像水波，会把记忆推回来。</h1>
+        <p class="page-desc">保留点击播放和唱片旋转的交互，同时让每张音乐卡片像从首页漂来的小岛。</p>
+    </section>
+    <div id="container">
+        <h1>我收藏的音乐</h1>
+        <p>音乐对于我来说也是记忆的载体，是否会在听到某首音乐的时候又想起某个时刻发生的某件事情。
+            点击下方卡片播放/暂停音乐，图片会同步旋转/停止～</p>
+    </div>
+
+    <div id="container2">
+        <div class="music-item" onclick="toggleMusic(1)">
+            <div class="box">
+                <img src="music/1.png" alt="音乐1封面" id="img1">
+            </div>
+            <div class="music-text">新的心跳</div>
+            <audio id="audio1" preload="metadata">
+                <source src="https://music.163.com/song/media/outer/url?id=1402022565.mp3" type="audio/mpeg">
+                你的浏览器不支持音频播放
+            </audio>
+        </div>
+
+        <div class="music-item" onclick="toggleMusic(2)">
+            <div class="box">
+                <img src="music/1.png" alt="音乐2封面" id="img2">
+            </div>
+            <div class="music-text">音乐2</div>
+            <audio id="audio2" preload="metadata">
+                <source src="https://music.163.com/song/media/outer/url?id=186016.mp3" type="audio/mpeg">
+                你的浏览器不支持音频播放
+            </audio>
+        </div>
+
+        <div class="music-item" onclick="toggleMusic(3)">
+            <div class="box">
+                <img src="music/1.png" alt="音乐3封面" id="img3">
+            </div>
+            <div class="music-text">音乐3</div>
+            <audio id="audio3" preload="metadata">
+                <source src="https://music.163.com/song/media/outer/url?id=1395468077.mp3" type="audio/mpeg">
+                你的浏览器不支持音频播放
+            </audio>
+        </div>
+
+        <div class="music-item" onclick="toggleMusic(4)">
+            <div class="box">
+                <img src="music/1.png" alt="音乐4封面" id="img4">
+            </div>
+            <div class="music-text">音乐4</div>
+            <audio id="audio4" preload="metadata">
+                <source src="https://music.163.com/song/media/outer/url?id=2082688822.mp3" type="audio/mpeg">
+                你的浏览器不支持音频播放
+            </audio>
+        </div>
+
+        <div class="music-item" onclick="toggleMusic(3)">
+            <div class="box">
+                <img src="music/1.png" alt="音乐3封面" id="img3">
+            </div>
+            <div class="music-text">音乐3</div>
+            <audio id="audio3" preload="metadata">
+                <source src="https://music.163.com/song/media/outer/url?id=1395468077.mp3" type="audio/mpeg">
+                你的浏览器不支持音频播放
+            </audio>
+        </div>
+
+        <div class="music-item" onclick="toggleMusic(3)">
+            <div class="box">
+                <img src="music/1.png" alt="音乐3封面" id="img3">
+            </div>
+            <div class="music-text">音乐3</div>
+            <audio id="audio3" preload="metadata">
+                <source src="https://music.163.com/song/media/outer/url?id=1395468077.mp3" type="audio/mpeg">
+                你的浏览器不支持音频播放
+            </audio>
+        </div>
+
+        <div class="music-item" onclick="toggleMusic(3)">
+            <div class="box">
+                <img src="music/1.png" alt="音乐3封面" id="img3">
+            </div>
+            <div class="music-text">音乐3</div>
+            <audio id="audio3" preload="metadata">
+                <source src="https://music.163.com/song/media/outer/url?id=1395468077.mp3" type="audio/mpeg">
+                你的浏览器不支持音频播放
+            </audio>
+        </div>
+
+        <div class="music-item" onclick="toggleMusic(3)">
+            <div class="box">
+                <img src="music/1.png" alt="音乐3封面" id="img3">
+            </div>
+            <div class="music-text">音乐3</div>
+            <audio id="audio3" preload="metadata">
+                <source src="https://music.163.com/song/media/outer/url?id=1395468077.mp3" type="audio/mpeg">
+                你的浏览器不支持音频播放
+            </audio>
+        </div>
+    </div>
+
+
+
+    <!-- JS交互逻辑：控制播放/暂停+旋转 -->
+    <script>
+        // 记录当前播放的音乐ID，避免多首同时播放
+        let currentPlayId = null;
+
+        // 播放/暂停切换函数
+        function toggleMusic(id) {
+            // 获取对应音频和图片元素
+            const audio = document.getElementById(`audio${id}`);
+            const img = document.getElementById(`img${id}`);
+
+            // 如果有其他音乐在播放，先暂停
+            if (currentPlayId && currentPlayId !== id) {
+                const oldAudio = document.getElementById(`audio${currentPlayId}`);
+                const oldImg = document.getElementById(`img${currentPlayId}`);
+                oldAudio.pause();
+                oldImg.classList.remove('rotate'); // 停止旋转
+            }
+
+            // 切换当前音乐状态
+            if (audio.paused) {
+                audio.play().catch(err => {
+                    alert(`音乐${id}播放失败：${err.message}\n请检查音乐链接`);
+                });
+                img.classList.add('rotate'); // 添加旋转类
+                currentPlayId = id;
+            } else {
+                audio.pause();
+                img.classList.remove('rotate'); // 移除旋转类
+                currentPlayId = null;
+            }
+        }
+    </script>
+    <script src="site.js"></script>
+    <script src="nav.js"></script>
+</body>
+</html>
