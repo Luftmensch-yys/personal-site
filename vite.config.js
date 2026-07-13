@@ -13,6 +13,7 @@ export default defineConfig({
         gallery: '绘画摄影.html',
         music: '音乐页.html',
         craft: '手工页.html',
+        modeling: '建模页.html',
         game: '游戏页.html',
         ff7: 'final-fantasy-vii.html',
         p5r: '女神异闻录5皇家版.html',

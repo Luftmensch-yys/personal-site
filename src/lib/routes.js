@@ -7,6 +7,7 @@ export const ROUTES = {
   game: '游戏页.html',
   music: '音乐页.html',
   craft: '手工页.html',
+  modeling: '建模页.html',
   more: 'more.html',
 }
 
@@ -45,6 +46,13 @@ export const PROJECT_ITEMS = [
     desc: '折纸、手作与小实验，让想法从屏幕里探出头来。',
     href: ROUTES.craft,
     img: 'make/cover.png',
+  },
+  {
+    title: '3D Modeling',
+    label: '建模',
+    desc: '把脑海里的形状捏成可旋转的体积，让光在多边形上找到落点。',
+    href: ROUTES.modeling,
+    img: 'modeling/cover.png',
   },
   {
     title: 'Next Room',
