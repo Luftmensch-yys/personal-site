@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap");
+
+.site-nav {
+    position: fixed;
+    top: 20px;
+    left: 24px;
+    z-index: 200;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 28px;
+    font-family: "Geist", "Microsoft YaHei", "PingFang SC", sans-serif;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.site-nav-bordered {
+    padding: 14px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 16px;
+    background: rgba(6, 6, 12, 0.45);
+    backdrop-filter: blur(12px);
+}
+
+.site-nav-brand {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    text-decoration: none;
+}
+
+.site-nav-links {
+    display: none;
+    align-items: center;
+    gap: 28px;
+}
+
+.site-nav-links a {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+.site-nav-links a:hover,
+.site-nav-links a.is-active {
+    color: #fff;
+}
+
+.site-nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-left: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+.site-nav-mobile {
+    position: fixed;
+    inset: 0;
+    z-index: 190;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+    padding: 80px 32px;
+    background: rgba(6, 6, 12, 0.96);
+    backdrop-filter: blur(16px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+.site-nav-mobile.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.site-nav-mobile a {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 26px;
+    font-family: "Geist", sans-serif;
+    text-decoration: none;
+}
+
+.site-nav-mobile a.is-active { color: #fff; }
+
+@media (max-width: 767px) {
+    .site-nav {
+        right: 24px;
+        left: 24px;
+        width: auto;
+    }
+}
+
+@media (min-width: 768px) {
+    .site-nav { left: 40px; top: 24px; gap: 32px; }
+    .site-nav-brand { font-size: 20px; }
+    .site-nav-links { display: flex; }
+    .site-nav-toggle { display: none; margin-left: 0; }
+}
+
+body.is-leaving .site-nav,
+.page-shell.is-leaving .site-nav {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.page-transition-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    background: #06060c;
+    opacity: 0;
+    transition: opacity 0.42s ease;
+}
+
+html.from-page-transition .page-transition-overlay {
+    opacity: 1;
+}
+
+body.is-leaving .page-transition-overlay {
+    opacity: 1;
+}
+
+body.is-entering:not(.is-entering-done) {
+    opacity: 0;
+}
+
+body.is-entering-done {
+    opacity: 1;
+    transition: opacity 0.52s ease 0.08s;
+}
+
+body.is-entering-done .page-transition-overlay {
+    opacity: 0;
+    transition: opacity 0.52s ease 0.06s;
+}
+
+body.unified-page {
+    min-height: 100vh;
+    padding-top: 100px;
+    color: var(--ink, #e8eaef);
+    font-family: "Geist", "Microsoft YaHei", sans-serif;
+    background:
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(90, 100, 150, 0.14), transparent 60%),
+        linear-gradient(180deg, #06060c, #0a0a12);
+}
+
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}

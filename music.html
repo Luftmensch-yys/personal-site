@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="init.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="site.css">
+    <title>MUSIC · yiyisa's space</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body.music-page {
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .music-room {
+            position: relative;
+            min-height: 92vh;
+            padding: 40px 0 100px;
+            perspective: 1200px;
+            overflow: hidden;
+        }
+
+        .music-room::before {
+            content: "";
+            position: absolute;
+            inset: auto 0 0;
+            height: 44%;
+            background: linear-gradient(180deg, transparent, rgba(145, 222, 254, 0.08));
+            pointer-events: none;
+        }
+
+        .album-track {
+            --track-x: 0px;
+            display: flex;
+            gap: clamp(26px, 4vw, 54px);
+            align-items: center;
+            width: max-content;
+            padding: 76px 12vw 48px;
+            transform: translate3d(var(--track-x), 0, 0) rotateX(6deg) rotateY(-10deg);
+            transform-style: preserve-3d;
+            transition: transform 340ms cubic-bezier(.2, .8, .2, 1);
+            will-change: transform;
+        }
+
+        .album-card {
+            position: relative;
+            width: clamp(160px, 19vw, 240px);
+            aspect-ratio: 1;
+            border: 0;
+            padding: 0;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 360ms ease, filter 360ms ease;
+        }
+
+        .album-card:hover,
+        .album-card:focus-visible,
+        .album-card.is-open {
+            transform: translateY(-16px) rotateY(8deg);
+            filter: brightness(1.08);
+            outline: none;
+        }
+
+        .album-cover {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow:
+                18px 18px 34px rgba(0, 0, 0, 0.32),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+            transform: translateZ(18px);
+            overflow: hidden;
+        }
+
+        .album-cover::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.58), transparent 23%),
+                linear-gradient(135deg, var(--c1), var(--c2) 55%, var(--c3));
+        }
+
+        .album-cover::after {
+            content: "";
+            position: absolute;
+            inset: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 8px;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.12) 0,
+                rgba(255, 255, 255, 0.12) 1px,
+                transparent 1px,
+                transparent 11px
+            );
+            mix-blend-mode: screen;
+            opacity: 0.42;
+        }
+
+        .album-spine {
+            position: absolute;
+            top: 9px;
+            bottom: 9px;
+            right: -22px;
+            width: 24px;
+            border-radius: 0 8px 8px 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0.22), rgba(0,0,0,0.48));
+            transform: rotateY(90deg);
+            transform-origin: left;
+        }
+
+        .album-title {
+            position: relative;
+            z-index: 2;
+            max-width: 80%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.88);
+            font-size: clamp(18px, 2vw, 28px);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            line-height: 1.15;
+            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        .vinyl {
+            position: absolute;
+            width: 82%;
+            aspect-ratio: 1;
+            right: -35%;
+            top: 9%;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, #f5f5f5 0 5%, #111 5.5% 16%, #050505 16.5% 100%),
+                repeating-radial-gradient(circle, rgba(255,255,255,.12) 0 1px, transparent 1px 8px);
+            box-shadow: 12px 14px 32px rgba(0, 0, 0, 0.36);
+            transform: translateX(-42%) rotate(0deg);
+            opacity: 0;
+            transition: transform 420ms ease, opacity 300ms ease;
+            pointer-events: none;
+        }
+
+        .album-card.is-open .vinyl {
+            opacity: 1;
+            transform: translateX(0) rotate(0deg);
+            animation: vinylSpin 4.8s linear infinite;
+        }
+
+        @keyframes vinylSpin {
+            to { transform: translateX(0) rotate(360deg); }
+        }
+
+        .music-note {
+            width: min(760px, calc(100% - 48px));
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.46);
+            font-size: 13px;
+            line-height: 1.9;
+            text-align: center;
+        }
+
+        .music-status {
+            display: block;
+            min-height: 24px;
+            margin-top: 16px;
+            color: rgba(145, 222, 254, 0.72);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 760px) {
+            .album-track {
+                padding-inline: 24px;
+                transform: translate3d(var(--track-x), 0, 0) rotateX(4deg);
+            }
+
+            .album-card {
+                width: 168px;
+            }
+        }
+    </style>
+</head>
+<body class="unified-page music-page">
+    <nav class="site-nav">
+        <a href="index.html" class="site-nav-brand">yiyisa's space</a>
+        <div class="site-nav-links">
+            <a href="index.html">Home</a>
+            <a href="project.html" class="is-active">Project</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <button type="button" class="site-nav-toggle" aria-label="Open menu" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+    </nav>
+    <div class="site-nav-mobile">
+        <a href="index.html">Home</a>
+        <a href="project.html" class="is-active">Project</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </div>
+
+    <section class="page-hero">
+        <div class="page-kicker">sound shelf / album cards</div>
+        <h1 class="page-title">音乐像一排可以翻开的书。</h1>
+        <p class="page-desc">滚动鼠标移动唱片架，点击封面展开黑胶。封面与音频先使用安全占位，后续替换为真实素材。</p>
+    </section>
+
+    <section class="music-room" aria-label="音乐专辑陈列">
+        <div class="album-track" id="albumTrack">
+            <button class="album-card" type="button" data-title="新的心跳" style="--c1:#91defe;--c2:#6656c8;--c3:#0b1024">
+                <span class="album-cover"><span class="album-title">新的心跳</span></span>
+                <span class="album-spine" aria-hidden="true"></span>
+                <span class="vinyl" aria-hidden="true"></span>
+            </button>
+            <button class="album-card" type="button" data-title="Moon Lake" style="--c1:#e8f2ff;--c2:#4c8ccf;--c3:#101421">
+                <span class="album-cover"><span class="album-title">Moon Lake</span></span>
+                <span class="album-spine" aria-hidden="true"></span>
+                <span class="vinyl" aria-hidden="true"></span>
+            </button>
+            <button class="album-card" type="button" data-title="Soft Orbit" style="--c1:#f6bdd8;--c2:#8e6fd8;--c3:#150d24">
+                <span class="album-cover"><span class="album-title">Soft Orbit</span></span>
+                <span class="album-spine" aria-hidden="true"></span>
+                <span class="vinyl" aria-hidden="true"></span>
+            </button>
+            <button class="album-card" type="button" data-title="Paper Room" style="--c1:#ffe7ad;--c2:#d77c6b;--c3:#24130c">
+                <span class="album-cover"><span class="album-title">Paper Room</span></span>
+                <span class="album-spine" aria-hidden="true"></span>
+                <span class="vinyl" aria-hidden="true"></span>
+            </button>
+            <button class="album-card" type="button" data-title="Night Bus" style="--c1:#d9f99d;--c2:#2f8f80;--c3:#071716">
+                <span class="album-cover"><span class="album-title">Night Bus</span></span>
+                <span class="album-spine" aria-hidden="true"></span>
+                <span class="vinyl" aria-hidden="true"></span>
+            </button>
+            <button class="album-card" type="button" data-title="Blue Hour" style="--c1:#b7c6ff;--c2:#5267c7;--c3:#080a19">
+                <span class="album-cover"><span class="album-title">Blue Hour</span></span>
+                <span class="album-spine" aria-hidden="true"></span>
+                <span class="vinyl" aria-hidden="true"></span>
+            </button>
+        </div>
+    </section>
+
+    <p class="music-note">
+        当前封面为抽象占位视觉，没有加入完整商业音乐文件。后续接入真实素材时，只需要为每张卡片补充正式封面与授权音频地址。
+        <span class="music-status" id="musicStatus" aria-live="polite"></span>
+    </p>
+
+    <script>
+        const track = document.getElementById('albumTrack');
+        const cards = Array.from(document.querySelectorAll('.album-card'));
+        const status = document.getElementById('musicStatus');
+        let offset = 0;
+        let clickTick = 0;
+
+        function clampTrack() {
+            const max = 80;
+            const min = Math.min(0, window.innerWidth - track.scrollWidth - 80);
+            offset = Math.max(min, Math.min(max, offset));
+            track.style.setProperty('--track-x', `${offset}px`);
+        }
+
+        function tickStatus() {
+            clickTick += 1;
+            const marks = ['咔哒', '咔哒 · 咔哒', '咔哒 · 咔哒 · 咔哒'];
+            status.textContent = marks[clickTick % marks.length];
+        }
+
+        window.addEventListener('wheel', (event) => {
+            offset -= event.deltaY * 0.75;
+            clampTrack();
+            tickStatus();
+        }, { passive: true });
+
+        window.addEventListener('resize', clampTrack);
+
+        cards.forEach((card) => {
+            card.addEventListener('click', () => {
+                cards.forEach((item) => {
+                    if (item !== card) item.classList.remove('is-open');
+                });
+                card.classList.toggle('is-open');
+                status.textContent = card.classList.contains('is-open')
+                    ? `${card.dataset.title} 已展开，等待真实音频接入`
+                    : '';
+            });
+        });
+
+        clampTrack();
+    </script>
+    <script src="site.js"></script>
+    <script src="nav.js"></script>
+</body>
+</html>
