@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="init.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="nav.css">
     <link rel="stylesheet" href="site.css">
     <title>MUSIC · yiyisa's space</title>
@@ -17,179 +17,413 @@
         }
 
         body.music-page {
-            overflow-x: hidden;
             min-height: 100vh;
-        }
-
-        .music-room {
-            position: relative;
-            min-height: 92vh;
-            padding: 40px 0 100px;
-            perspective: 1200px;
-            overflow: hidden;
-        }
-
-        .music-room::before {
-            content: "";
-            position: absolute;
-            inset: auto 0 0;
-            height: 44%;
-            background: linear-gradient(180deg, transparent, rgba(145, 222, 254, 0.08));
-            pointer-events: none;
-        }
-
-        .album-track {
-            --track-x: 0px;
-            display: flex;
-            gap: clamp(26px, 4vw, 54px);
-            align-items: center;
-            width: max-content;
-            padding: 76px 12vw 48px;
-            transform: translate3d(var(--track-x), 0, 0) rotateX(6deg) rotateY(-10deg);
-            transform-style: preserve-3d;
-            transition: transform 340ms cubic-bezier(.2, .8, .2, 1);
-            will-change: transform;
-        }
-
-        .album-card {
-            position: relative;
-            width: clamp(160px, 19vw, 240px);
-            aspect-ratio: 1;
-            border: 0;
-            padding: 0;
-            background: transparent;
-            color: inherit;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            transition: transform 360ms ease, filter 360ms ease;
-        }
-
-        .album-card:hover,
-        .album-card:focus-visible,
-        .album-card.is-open {
-            transform: translateY(-16px) rotateY(8deg);
-            filter: brightness(1.08);
-            outline: none;
-        }
-
-        .album-cover {
-            position: absolute;
-            inset: 0;
-            display: grid;
-            place-items: center;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow:
-                18px 18px 34px rgba(0, 0, 0, 0.32),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-            transform: translateZ(18px);
-            overflow: hidden;
-        }
-
-        .album-cover::before {
-            content: "";
-            position: absolute;
-            inset: 0;
+            overflow-x: hidden;
             background:
-                radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.58), transparent 23%),
-                linear-gradient(135deg, var(--c1), var(--c2) 55%, var(--c3));
+                radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.08), transparent 25%),
+                radial-gradient(circle at 18% 66%, rgba(145, 222, 254, 0.08), transparent 28%),
+                linear-gradient(180deg, #1d1d1b 0%, #111110 52%, #080807 100%);
+            color: #f2eee6;
         }
 
-        .album-cover::after {
+        body.music-page::before {
             content: "";
-            position: absolute;
-            inset: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 8px;
-            background: repeating-linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0.12) 0,
-                rgba(255, 255, 255, 0.12) 1px,
-                transparent 1px,
-                transparent 11px
-            );
-            mix-blend-mode: screen;
-            opacity: 0.42;
-        }
-
-        .album-spine {
-            position: absolute;
-            top: 9px;
-            bottom: 9px;
-            right: -22px;
-            width: 24px;
-            border-radius: 0 8px 8px 0;
-            background: linear-gradient(90deg, rgba(255,255,255,0.22), rgba(0,0,0,0.48));
-            transform: rotateY(90deg);
-            transform-origin: left;
-        }
-
-        .album-title {
-            position: relative;
-            z-index: 2;
-            max-width: 80%;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.88);
-            font-size: clamp(18px, 2vw, 28px);
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            line-height: 1.15;
-            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
-        }
-
-        .vinyl {
-            position: absolute;
-            width: 82%;
-            aspect-ratio: 1;
-            right: -35%;
-            top: 9%;
-            border-radius: 50%;
-            background:
-                radial-gradient(circle, #f5f5f5 0 5%, #111 5.5% 16%, #050505 16.5% 100%),
-                repeating-radial-gradient(circle, rgba(255,255,255,.12) 0 1px, transparent 1px 8px);
-            box-shadow: 12px 14px 32px rgba(0, 0, 0, 0.36);
-            transform: translateX(-42%) rotate(0deg);
-            opacity: 0;
-            transition: transform 420ms ease, opacity 300ms ease;
+            position: fixed;
+            inset: 0;
+            z-index: 0;
             pointer-events: none;
+            opacity: 0.34;
+            background-image:
+                radial-gradient(circle, rgba(255,255,255,.22) 0 0.7px, transparent 0.9px),
+                radial-gradient(circle, rgba(0,0,0,.36) 0 0.9px, transparent 1px);
+            background-size: 3px 3px, 5px 5px;
+            mix-blend-mode: soft-light;
         }
 
-        .album-card.is-open .vinyl {
-            opacity: 1;
-            transform: translateX(0) rotate(0deg);
-            animation: vinylSpin 4.8s linear infinite;
+        .music-player-page {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding: 92px 24px 42px;
         }
 
-        @keyframes vinylSpin {
-            to { transform: translateX(0) rotate(360deg); }
-        }
-
-        .music-note {
-            width: min(760px, calc(100% - 48px));
-            margin: 0 auto;
-            color: rgba(255, 255, 255, 0.46);
-            font-size: 13px;
-            line-height: 1.9;
+        .music-heading {
             text-align: center;
+            margin: 0 auto clamp(42px, 7vh, 76px);
         }
 
-        .music-status {
-            display: block;
-            min-height: 24px;
-            margin-top: 16px;
-            color: rgba(145, 222, 254, 0.72);
-            letter-spacing: 0.08em;
+        .music-heading .kicker {
+            margin-bottom: 12px;
+            color: rgba(242, 238, 230, 0.38);
+            font-size: 11px;
+            letter-spacing: 0.28em;
             text-transform: uppercase;
         }
 
+        .music-heading h1 {
+            font-size: clamp(32px, 4vw, 54px);
+            line-height: 1.05;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            color: rgba(242, 238, 230, 0.72);
+            text-shadow: 0 18px 45px rgba(0,0,0,.45);
+        }
+
+        .player-shell {
+            position: relative;
+            width: min(1160px, 100%);
+            margin: 0 auto;
+        }
+
+        .carousel-stage {
+            position: relative;
+            height: clamp(250px, 34vw, 360px);
+            perspective: 1400px;
+            transform-style: preserve-3d;
+        }
+
+        .cover-card {
+            --x: 0px;
+            --z: 0px;
+            --ry: 0deg;
+            --scale: 1;
+            --opacity: 1;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: clamp(185px, 22vw, 280px);
+            aspect-ratio: 1;
+            border: 0;
+            border-radius: 12px;
+            padding: 0;
+            background: #111;
+            color: inherit;
+            cursor: pointer;
+            overflow: visible;
+            opacity: var(--opacity);
+            transform: translate(-50%, -50%) translate3d(var(--x), 0, var(--z)) rotateY(var(--ry)) scale(var(--scale));
+            transform-style: preserve-3d;
+            transition:
+                transform 620ms cubic-bezier(.22,.9,.2,1),
+                opacity 360ms ease,
+                filter 360ms ease;
+            filter: saturate(.86) brightness(.72);
+            box-shadow: 0 36px 70px rgba(0,0,0,.46);
+            outline: none;
+        }
+
+        .cover-card.is-active {
+            z-index: 10;
+            filter: saturate(1.08) brightness(1.03);
+            box-shadow: 0 42px 90px rgba(0,0,0,.54);
+        }
+
+        .cover-card.is-left,
+        .cover-card.is-right {
+            z-index: 7;
+        }
+
+        .cover-card.is-far {
+            z-index: 2;
+        }
+
+        .cover-card:focus-visible {
+            box-shadow: 0 0 0 2px rgba(242,238,230,.85), 0 42px 90px rgba(0,0,0,.54);
+        }
+
+        .cover-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            transform: translateZ(18px);
+            background: var(--fallback);
+        }
+
+        .cover-face img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .cover-face::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,.18), transparent 34%, rgba(0,0,0,.22)),
+                radial-gradient(circle at 48% 16%, rgba(255,255,255,.2), transparent 25%);
+            pointer-events: none;
+        }
+
+        .cover-spine {
+            position: absolute;
+            top: 3%;
+            bottom: 3%;
+            width: 26px;
+            right: -20px;
+            border-radius: 0 8px 8px 0;
+            background: linear-gradient(90deg, rgba(255,255,255,.28), rgba(0,0,0,.62));
+            transform: rotateY(90deg);
+            transform-origin: left center;
+        }
+
+        .cover-reflection {
+            position: absolute;
+            left: 7%;
+            right: 7%;
+            top: calc(100% + 18px);
+            height: 38%;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(255,255,255,.12), transparent 68%);
+            transform: rotateX(72deg);
+            opacity: .45;
+            filter: blur(2px);
+            pointer-events: none;
+        }
+
+        .track-title-wrap {
+            min-height: 96px;
+            margin-top: clamp(26px, 4vh, 44px);
+            text-align: center;
+        }
+
+        .track-title {
+            font-size: clamp(35px, 6vw, 72px);
+            line-height: 1;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: rgba(242, 238, 230, 0.94);
+            text-shadow: 0 22px 48px rgba(0,0,0,.58);
+            transform: skewX(3deg) rotate(0.8deg);
+        }
+
+        .track-artist {
+            margin-top: 14px;
+            color: rgba(242, 238, 230, 0.46);
+            font-size: 13px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .control-btn,
+        .floating-btn,
+        .reactive-btn,
+        .panel-close {
+            border: 1px solid rgba(242,238,230,.14);
+            background: rgba(242, 238, 230, 0.03);
+            color: rgba(242, 238, 230, 0.82);
+            cursor: pointer;
+            transition: transform .24s ease, border-color .24s ease, background .24s ease, color .24s ease;
+        }
+
+        .control-btn {
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 999px;
+            font-size: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn.play {
+            width: 64px;
+            height: 64px;
+            font-size: 28px;
+            background: rgba(242, 238, 230, 0.06);
+        }
+
+        .control-btn:hover,
+        .floating-btn:hover,
+        .reactive-btn:hover,
+        .panel-close:hover {
+            transform: translateY(-2px) scale(1.04);
+            border-color: rgba(242,238,230,.38);
+            background: rgba(242,238,230,.1);
+            color: #fff;
+        }
+
+        .reactive-cluster {
+            position: fixed;
+            right: 28px;
+            top: 34px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(242,238,230,.5);
+            font-size: 11px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .reactive-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+        }
+
+        .reactive-cluster.is-off .reactive-label {
+            color: rgba(242,238,230,.28);
+        }
+
+        .floating-btn {
+            position: fixed;
+            right: 26px;
+            bottom: 26px;
+            z-index: 22;
+            display: grid;
+            place-items: center;
+            width: 58px;
+            height: 58px;
+            border-radius: 999px;
+            font-size: 32px;
+            line-height: 1;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 50px rgba(0,0,0,.34);
+        }
+
+        .add-panel {
+            position: fixed;
+            z-index: 21;
+            right: 24px;
+            bottom: 96px;
+            width: min(360px, calc(100vw - 48px));
+            padding: 22px;
+            border: 1px solid rgba(242,238,230,.13);
+            border-radius: 22px;
+            background: rgba(18, 18, 16, 0.82);
+            box-shadow: 0 30px 90px rgba(0,0,0,.54);
+            backdrop-filter: blur(22px);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(16px) scale(.97);
+            transition: opacity .28s ease, transform .28s ease;
+        }
+
+        .add-panel.is-open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+
+        .panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .panel-head h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: rgba(242,238,230,.92);
+        }
+
+        .panel-head p {
+            margin-top: 5px;
+            color: rgba(242,238,230,.42);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .panel-close {
+            flex: 0 0 auto;
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+        }
+
+        .dropzone {
+            display: grid;
+            place-items: center;
+            min-height: 86px;
+            margin-top: 12px;
+            border: 1px dashed rgba(242,238,230,.24);
+            border-radius: 16px;
+            color: rgba(242,238,230,.58);
+            font-size: 12px;
+            letter-spacing: .12em;
+            text-align: center;
+            text-transform: uppercase;
+            background: rgba(255,255,255,.025);
+        }
+
+        .dropzone small {
+            display: block;
+            margin-top: 6px;
+            color: rgba(242,238,230,.32);
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .title-field {
+            width: 100%;
+            margin-top: 14px;
+            padding: 14px 15px;
+            border: 1px solid rgba(242,238,230,.16);
+            border-radius: 14px;
+            background: rgba(255,255,255,.04);
+            color: #f2eee6;
+            outline: none;
+        }
+
+        .title-field::placeholder {
+            color: rgba(242,238,230,.3);
+        }
+
+        .panel-action {
+            width: 100%;
+            margin-top: 14px;
+            padding: 14px 16px;
+            border: 0;
+            border-radius: 14px;
+            background: rgba(242,238,230,.88);
+            color: #111;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .music-footnote {
+            width: min(680px, calc(100% - 48px));
+            margin: 36px auto 0;
+            color: rgba(242,238,230,.34);
+            font-size: 12px;
+            line-height: 1.8;
+            text-align: center;
+        }
+
         @media (max-width: 760px) {
-            .album-track {
-                padding-inline: 24px;
-                transform: translate3d(var(--track-x), 0, 0) rotateX(4deg);
+            .music-player-page {
+                padding-inline: 14px;
             }
 
-            .album-card {
-                width: 168px;
+            .carousel-stage {
+                height: 270px;
+            }
+
+            .cover-card {
+                width: 185px;
+            }
+
+            .track-title {
+                font-size: clamp(34px, 12vw, 52px);
+            }
+
+            .reactive-cluster {
+                top: 78px;
+                right: 16px;
             }
         }
     </style>
@@ -214,93 +448,202 @@
         <a href="contact.html">Contact</a>
     </div>
 
-    <section class="page-hero">
-        <div class="page-kicker">sound shelf / album cards</div>
-        <h1 class="page-title">音乐像一排可以翻开的书。</h1>
-        <p class="page-desc">滚动鼠标移动唱片架，点击封面展开黑胶。封面与音频先使用安全占位，后续替换为真实素材。</p>
-    </section>
-
-    <section class="music-room" aria-label="音乐专辑陈列">
-        <div class="album-track" id="albumTrack">
-            <button class="album-card" type="button" data-title="新的心跳" style="--c1:#91defe;--c2:#6656c8;--c3:#0b1024">
-                <span class="album-cover"><span class="album-title">新的心跳</span></span>
-                <span class="album-spine" aria-hidden="true"></span>
-                <span class="vinyl" aria-hidden="true"></span>
-            </button>
-            <button class="album-card" type="button" data-title="Moon Lake" style="--c1:#e8f2ff;--c2:#4c8ccf;--c3:#101421">
-                <span class="album-cover"><span class="album-title">Moon Lake</span></span>
-                <span class="album-spine" aria-hidden="true"></span>
-                <span class="vinyl" aria-hidden="true"></span>
-            </button>
-            <button class="album-card" type="button" data-title="Soft Orbit" style="--c1:#f6bdd8;--c2:#8e6fd8;--c3:#150d24">
-                <span class="album-cover"><span class="album-title">Soft Orbit</span></span>
-                <span class="album-spine" aria-hidden="true"></span>
-                <span class="vinyl" aria-hidden="true"></span>
-            </button>
-            <button class="album-card" type="button" data-title="Paper Room" style="--c1:#ffe7ad;--c2:#d77c6b;--c3:#24130c">
-                <span class="album-cover"><span class="album-title">Paper Room</span></span>
-                <span class="album-spine" aria-hidden="true"></span>
-                <span class="vinyl" aria-hidden="true"></span>
-            </button>
-            <button class="album-card" type="button" data-title="Night Bus" style="--c1:#d9f99d;--c2:#2f8f80;--c3:#071716">
-                <span class="album-cover"><span class="album-title">Night Bus</span></span>
-                <span class="album-spine" aria-hidden="true"></span>
-                <span class="vinyl" aria-hidden="true"></span>
-            </button>
-            <button class="album-card" type="button" data-title="Blue Hour" style="--c1:#b7c6ff;--c2:#5267c7;--c3:#080a19">
-                <span class="album-cover"><span class="album-title">Blue Hour</span></span>
-                <span class="album-spine" aria-hidden="true"></span>
-                <span class="vinyl" aria-hidden="true"></span>
-            </button>
+    <main class="music-player-page">
+        <div class="reactive-cluster" id="reactiveCluster">
+            <button class="reactive-btn" type="button" id="reactiveToggle" aria-label="Mode sounds reactive">≈</button>
+            <span class="reactive-label" id="reactiveLabel">Reactive on</span>
         </div>
-    </section>
 
-    <p class="music-note">
-        当前封面为抽象占位视觉，没有加入完整商业音乐文件。后续接入真实素材时，只需要为每张卡片补充正式封面与授权音频地址。
-        <span class="music-status" id="musicStatus" aria-live="polite"></span>
-    </p>
+        <header class="music-heading">
+            <p class="kicker">playlist carousel</p>
+            <h1>Lecteur de Playlist</h1>
+        </header>
+
+        <section class="player-shell" aria-label="音乐播放器">
+            <div class="carousel-stage" id="carouselStage" aria-live="polite"></div>
+
+            <div class="track-title-wrap">
+                <h2 class="track-title" id="trackTitle">Titre du morceau</h2>
+                <p class="track-artist" id="trackArtist">Glisser sur les cartes pour naviguer</p>
+            </div>
+
+            <div class="player-controls">
+                <button class="control-btn" type="button" id="prevTrack" aria-label="Previous track">↤</button>
+                <button class="control-btn play" type="button" id="playTrack" aria-label="Play preview">▶</button>
+                <button class="control-btn" type="button" id="nextTrack" aria-label="Next track">↦</button>
+            </div>
+        </section>
+
+        <p class="music-footnote">
+            当前使用站内图片作为临时封面，没有加入完整商业音乐文件。右下角添加面板用于本地预览新卡片结构，后续可替换为真实授权封面与音频。
+        </p>
+    </main>
+
+    <aside class="add-panel" id="addPanel" aria-label="添加音乐面板">
+        <div class="panel-head">
+            <div>
+                <h2>Ajouter un morceau</h2>
+                <p>Limité à 1 ajout • Image carrée obligatoire</p>
+            </div>
+            <button class="panel-close" type="button" id="closePanel" aria-label="Close add panel">×</button>
+        </div>
+        <label class="dropzone">
+            <input id="audioInput" type="file" accept="audio/mpeg,audio/mp3" hidden>
+            Déposer un fichier MP3
+            <small>本地预览，不会上传</small>
+        </label>
+        <label class="dropzone">
+            <input id="imageInput" type="file" accept="image/*" hidden>
+            Déposer une image carrée
+            <small>Format 1:1 uniquement</small>
+        </label>
+        <input class="title-field" id="titleInput" type="text" maxlength="48" placeholder="Nom du morceau">
+        <button class="panel-action" type="button" id="addTrack">Ajouter au carousel</button>
+    </aside>
+
+    <button class="floating-btn" type="button" id="openPanel" aria-label="Ajouter un morceau">+</button>
 
     <script>
-        const track = document.getElementById('albumTrack');
-        const cards = Array.from(document.querySelectorAll('.album-card'));
-        const status = document.getElementById('musicStatus');
-        let offset = 0;
-        let clickTick = 0;
+        const tracks = [
+            { title: 'Someday', artist: 'The Strokes', cover: 'music/1.png', fallback: 'linear-gradient(135deg,#f8c453,#1aa6b7)' },
+            { title: 'Dancing in the Moonlight', artist: 'Toploader', cover: 'img/10.jpg', fallback: 'linear-gradient(135deg,#eec84b,#1b1b18)' },
+            { title: 'Lost on You', artist: 'LP', cover: 'ff7/s.png', fallback: 'linear-gradient(135deg,#efefdf,#111)' },
+            { title: 'As It Was', artist: 'Harry Styles', cover: 'img/6.jpg', fallback: 'linear-gradient(135deg,#f6d5c8,#314f86)' },
+            { title: 'Happy', artist: 'Pharrell Williams', cover: 'make/cover.png', fallback: 'linear-gradient(135deg,#ffd54f,#794c1f)' },
+            { title: 'Alors on danse', artist: 'Stromae', cover: 'ff7/rb.jpg', fallback: 'linear-gradient(135deg,#27356f,#111)' },
+        ];
 
-        function clampTrack() {
-            const max = 80;
-            const min = Math.min(0, window.innerWidth - track.scrollWidth - 80);
-            offset = Math.max(min, Math.min(max, offset));
-            track.style.setProperty('--track-x', `${offset}px`);
+        const stage = document.getElementById('carouselStage');
+        const title = document.getElementById('trackTitle');
+        const artist = document.getElementById('trackArtist');
+        const prev = document.getElementById('prevTrack');
+        const next = document.getElementById('nextTrack');
+        const play = document.getElementById('playTrack');
+        const addPanel = document.getElementById('addPanel');
+        const openPanel = document.getElementById('openPanel');
+        const closePanel = document.getElementById('closePanel');
+        const addTrack = document.getElementById('addTrack');
+        const titleInput = document.getElementById('titleInput');
+        const imageInput = document.getElementById('imageInput');
+        const reactiveToggle = document.getElementById('reactiveToggle');
+        const reactiveCluster = document.getElementById('reactiveCluster');
+        const reactiveLabel = document.getElementById('reactiveLabel');
+
+        let active = 0;
+        let reactive = true;
+        let playing = false;
+        let addedPreview = false;
+        let startX = 0;
+
+        function wrap(index) {
+            return ((index % tracks.length) + tracks.length) % tracks.length;
         }
 
-        function tickStatus() {
-            clickTick += 1;
-            const marks = ['咔哒', '咔哒 · 咔哒', '咔哒 · 咔哒 · 咔哒'];
-            status.textContent = marks[clickTick % marks.length];
+        function signedDistance(itemIndex) {
+            let distance = itemIndex - active;
+            const half = tracks.length / 2;
+            if (distance > half) distance -= tracks.length;
+            if (distance < -half) distance += tracks.length;
+            return distance;
         }
 
-        window.addEventListener('wheel', (event) => {
-            offset -= event.deltaY * 0.75;
-            clampTrack();
-            tickStatus();
-        }, { passive: true });
+        function render() {
+            stage.innerHTML = '';
+            const activeTrack = tracks[active];
+            title.textContent = `${activeTrack.artist} - ${activeTrack.title}`;
+            artist.textContent = reactive ? 'RÉACTIF ON · drag or use controls' : 'RÉACTIF OFF · drag or use controls';
+            play.textContent = playing ? '❚❚' : '▶';
 
-        window.addEventListener('resize', clampTrack);
-
-        cards.forEach((card) => {
-            card.addEventListener('click', () => {
-                cards.forEach((item) => {
-                    if (item !== card) item.classList.remove('is-open');
+            tracks.forEach((track, itemIndex) => {
+                const distance = signedDistance(itemIndex);
+                const hidden = Math.abs(distance) > 2;
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'cover-card';
+                card.setAttribute('aria-label', `${track.artist} - ${track.title}`);
+                card.style.setProperty('--fallback', track.fallback);
+                card.style.setProperty('--x', `${distance * 245}px`);
+                card.style.setProperty('--z', `${Math.max(-260, 80 - Math.abs(distance) * 170)}px`);
+                card.style.setProperty('--ry', `${distance * -58}deg`);
+                card.style.setProperty('--scale', `${Math.max(.72, 1 - Math.abs(distance) * .1)}`);
+                card.style.setProperty('--opacity', hidden ? '0' : '1');
+                card.style.pointerEvents = hidden ? 'none' : 'auto';
+                if (distance === 0) card.classList.add('is-active');
+                if (distance === -1) card.classList.add('is-left');
+                if (distance === 1) card.classList.add('is-right');
+                if (Math.abs(distance) === 2) card.classList.add('is-far');
+                card.innerHTML = `
+                    <span class="cover-face"><img src="${track.cover}" alt="${track.artist}" draggable="false"></span>
+                    <span class="cover-spine" aria-hidden="true"></span>
+                    <span class="cover-reflection" aria-hidden="true"></span>
+                `;
+                card.addEventListener('click', () => {
+                    active = itemIndex;
+                    playing = false;
+                    render();
                 });
-                card.classList.toggle('is-open');
-                status.textContent = card.classList.contains('is-open')
-                    ? `${card.dataset.title} 已展开，等待真实音频接入`
-                    : '';
+                stage.appendChild(card);
             });
+        }
+
+        function move(delta) {
+            active = wrap(active + delta);
+            playing = false;
+            render();
+        }
+
+        prev.addEventListener('click', () => move(-1));
+        next.addEventListener('click', () => move(1));
+        play.addEventListener('click', () => {
+            playing = !playing;
+            render();
         });
 
-        clampTrack();
+        stage.addEventListener('pointerdown', (event) => {
+            startX = event.clientX;
+        });
+
+        stage.addEventListener('pointerup', (event) => {
+            const delta = event.clientX - startX;
+            if (Math.abs(delta) > 38) move(delta < 0 ? 1 : -1);
+        });
+
+        stage.addEventListener('wheel', (event) => {
+            event.preventDefault();
+            move(event.deltaY > 0 || event.deltaX > 0 ? 1 : -1);
+        }, { passive: false });
+
+        reactiveToggle.addEventListener('click', () => {
+            reactive = !reactive;
+            reactiveCluster.classList.toggle('is-off', !reactive);
+            reactiveLabel.textContent = reactive ? 'Reactive on' : 'Reactive off';
+            render();
+        });
+
+        openPanel.addEventListener('click', () => addPanel.classList.add('is-open'));
+        closePanel.addEventListener('click', () => addPanel.classList.remove('is-open'));
+
+        addTrack.addEventListener('click', () => {
+            if (addedPreview) {
+                artist.textContent = 'Limité à 1 ajout pour cette maquette';
+                return;
+            }
+            const previewTitle = titleInput.value.trim() || 'Local Preview';
+            const imageFile = imageInput.files && imageInput.files[0];
+            const cover = imageFile ? URL.createObjectURL(imageFile) : 'img/11.png';
+            tracks.push({
+                title: previewTitle,
+                artist: 'Preview',
+                cover,
+                fallback: 'linear-gradient(135deg,#f7c5ff,#5865f2)',
+            });
+            addedPreview = true;
+            active = tracks.length - 1;
+            addPanel.classList.remove('is-open');
+            render();
+        });
+
+        render();
     </script>
     <script src="site.js"></script>
     <script src="nav.js"></script>
