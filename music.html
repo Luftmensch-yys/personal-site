@@ -404,6 +404,16 @@
             text-align: center;
         }
 
+        .track-time {
+            width: min(520px, calc(100% - 48px));
+            margin: 18px auto 0;
+            color: rgba(242,238,230,.36);
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
         @media (max-width: 760px) {
             .music-player-page {
                 padding-inline: 14px;
@@ -472,10 +482,12 @@
                 <button class="control-btn play" type="button" id="playTrack" aria-label="Play preview">▶</button>
                 <button class="control-btn" type="button" id="nextTrack" aria-label="Next track">↦</button>
             </div>
+            <p class="track-time" id="trackTime">00:00 / 00:00</p>
+            <audio id="audioPlayer" preload="metadata"></audio>
         </section>
 
         <p class="music-footnote">
-            当前使用站内图片作为临时封面，没有加入完整商业音乐文件。右下角添加面板用于本地预览新卡片结构，后续可替换为真实授权封面与音频。
+            当前播放列表已接入你提供的 MP3。本页不会上传文件；右下角添加面板仍用于本地预览新卡片结构。
         </p>
     </main>
 
@@ -505,12 +517,27 @@
 
     <script>
         const tracks = [
-            { title: 'Someday', artist: 'The Strokes', cover: 'music/1.png', fallback: 'linear-gradient(135deg,#f8c453,#1aa6b7)' },
-            { title: 'Dancing in the Moonlight', artist: 'Toploader', cover: 'img/10.jpg', fallback: 'linear-gradient(135deg,#eec84b,#1b1b18)' },
-            { title: 'Lost on You', artist: 'LP', cover: 'ff7/s.png', fallback: 'linear-gradient(135deg,#efefdf,#111)' },
-            { title: 'As It Was', artist: 'Harry Styles', cover: 'img/6.jpg', fallback: 'linear-gradient(135deg,#f6d5c8,#314f86)' },
-            { title: 'Happy', artist: 'Pharrell Williams', cover: 'make/cover.png', fallback: 'linear-gradient(135deg,#ffd54f,#794c1f)' },
-            { title: 'Alors on danse', artist: 'Stromae', cover: 'ff7/rb.jpg', fallback: 'linear-gradient(135deg,#27356f,#111)' },
+            {
+                title: 'FLY ME TO THE MOON (AYANAMI Version)',
+                artist: '林原めぐみ',
+                cover: 'music/covers/fly-me-to-the-moon-ayanami.jpg',
+                audio: 'music/tracks/fly-me-to-the-moon-ayanami.mp3',
+                fallback: 'linear-gradient(135deg,#f8c453,#1aa6b7)',
+            },
+            {
+                title: 'Color Your Night',
+                artist: 'Lotus Juice / 高橋あず美 / ATLUS GAME MUSIC',
+                cover: 'music/covers/color-your-night.jpg',
+                audio: 'music/tracks/color-your-night.mp3',
+                fallback: 'linear-gradient(135deg,#eec84b,#1b1b18)',
+            },
+            {
+                title: 'No More What Ifs',
+                artist: 'Lyn',
+                cover: 'music/covers/no-more-what-ifs.jpg',
+                audio: 'music/tracks/no-more-what-ifs.mp3',
+                fallback: 'linear-gradient(135deg,#efefdf,#111)',
+            },
         ];
 
         const stage = document.getElementById('carouselStage');
@@ -525,9 +552,12 @@
         const addTrack = document.getElementById('addTrack');
         const titleInput = document.getElementById('titleInput');
         const imageInput = document.getElementById('imageInput');
+        const audioInput = document.getElementById('audioInput');
         const reactiveToggle = document.getElementById('reactiveToggle');
         const reactiveCluster = document.getElementById('reactiveCluster');
         const reactiveLabel = document.getElementById('reactiveLabel');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const trackTime = document.getElementById('trackTime');
 
         let active = 0;
         let reactive = true;
@@ -545,6 +575,37 @@
             if (distance > half) distance -= tracks.length;
             if (distance < -half) distance += tracks.length;
             return distance;
+        }
+
+        function formatTime(seconds) {
+            if (!Number.isFinite(seconds)) return '00:00';
+            const minutes = Math.floor(seconds / 60);
+            const rest = Math.floor(seconds % 60);
+            return `${String(minutes).padStart(2, '0')}:${String(rest).padStart(2, '0')}`;
+        }
+
+        function updateTime() {
+            trackTime.textContent = `${formatTime(audioPlayer.currentTime)} / ${formatTime(audioPlayer.duration)}`;
+        }
+
+        function loadActiveTrack({ autoplay = false } = {}) {
+            const activeTrack = tracks[active];
+            if (audioPlayer.getAttribute('src') !== activeTrack.audio) {
+                audioPlayer.src = activeTrack.audio || '';
+                audioPlayer.load();
+            }
+            updateTime();
+            if (!autoplay || !activeTrack.audio) return;
+            audioPlayer.play()
+                .then(() => {
+                    playing = true;
+                    render();
+                })
+                .catch(() => {
+                    playing = false;
+                    render();
+                    artist.textContent = '浏览器阻止了自动播放，请再点一次播放';
+                });
         }
 
         function render() {
@@ -578,25 +639,47 @@
                     <span class="cover-reflection" aria-hidden="true"></span>
                 `;
                 card.addEventListener('click', () => {
+                    const wasPlaying = playing;
                     active = itemIndex;
                     playing = false;
+                    audioPlayer.pause();
                     render();
+                    loadActiveTrack({ autoplay: wasPlaying });
                 });
                 stage.appendChild(card);
             });
         }
 
         function move(delta) {
+            const wasPlaying = playing;
             active = wrap(active + delta);
             playing = false;
+            audioPlayer.pause();
             render();
+            loadActiveTrack({ autoplay: wasPlaying });
         }
 
         prev.addEventListener('click', () => move(-1));
         next.addEventListener('click', () => move(1));
         play.addEventListener('click', () => {
-            playing = !playing;
-            render();
+            if (playing) {
+                audioPlayer.pause();
+                playing = false;
+                render();
+                return;
+            }
+
+            loadActiveTrack();
+            audioPlayer.play()
+                .then(() => {
+                    playing = true;
+                    render();
+                })
+                .catch(() => {
+                    playing = false;
+                    render();
+                    artist.textContent = '无法播放当前音频，请检查文件路径或格式';
+                });
         });
 
         stage.addEventListener('pointerdown', (event) => {
@@ -630,22 +713,34 @@
             }
             const previewTitle = titleInput.value.trim() || 'Local Preview';
             const imageFile = imageInput.files && imageInput.files[0];
+            const audioFile = audioInput.files && audioInput.files[0];
             const cover = imageFile ? URL.createObjectURL(imageFile) : 'img/11.png';
+            const audio = audioFile ? URL.createObjectURL(audioFile) : '';
             tracks.push({
                 title: previewTitle,
                 artist: 'Preview',
                 cover,
+                audio,
                 fallback: 'linear-gradient(135deg,#f7c5ff,#5865f2)',
             });
             addedPreview = true;
             active = tracks.length - 1;
+            playing = false;
+            audioPlayer.pause();
             addPanel.classList.remove('is-open');
             render();
+            loadActiveTrack();
         });
 
+        audioPlayer.addEventListener('loadedmetadata', updateTime);
+        audioPlayer.addEventListener('timeupdate', updateTime);
+        audioPlayer.addEventListener('ended', () => move(1));
+
         render();
+        loadActiveTrack();
     </script>
     <script src="site.js"></script>
     <script src="nav.js"></script>
 </body>
 </html>
+
