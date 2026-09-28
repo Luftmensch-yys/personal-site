@@ -8,133 +8,238 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="nav.css">
     <link rel="stylesheet" href="site.css">
-    <title>绘画摄影</title>
+    <title>绘画摄影 · Infinite Canvas</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body.gallery-page {
-            overflow-x: hidden;
-        }
-
-        .photo-mosaic {
-            width: min(1280px, calc(100% - 48px));
-            margin: 0 auto 96px;
-            display: grid;
-            grid-template-columns: repeat(12, minmax(0, 1fr));
-            grid-auto-rows: 120px;
-            gap: 14px;
-        }
-
-        .photo-item {
-            position: relative;
+            min-height: 100vh;
             overflow: hidden;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.02);
-            opacity: 0;
-            transform: translateY(24px) scale(0.98);
-            transition:
-                opacity 0.7s ease,
-                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 0.25s ease;
+            background: #f4f1ea;
+            color: #151515;
         }
 
-        .photo-item.is-visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .photo-item:hover {
-            border-color: rgba(145, 222, 254, 0.28);
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .photo-item:hover img {
-            transform: scale(1.05);
-        }
-
-        .photo-item::after {
+        body.gallery-page::before {
             content: "";
-            position: absolute;
+            position: fixed;
             inset: 0;
-            background: linear-gradient(180deg, transparent 55%, rgba(6, 6, 12, 0.42) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.34;
+            background-image:
+                linear-gradient(rgba(0,0,0,.055) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,.055) 1px, transparent 1px);
+            background-size: 72px 72px;
+            transform: translate3d(var(--grid-x, 0px), var(--grid-y, 0px), 0) scale(var(--grid-scale, 1));
+            transform-origin: center;
+        }
+
+        .gallery-page .site-nav {
+            color: #151515;
+        }
+
+        .gallery-page .site-nav-links a,
+        .gallery-page .site-nav-brand,
+        .gallery-page .site-nav-toggle {
+            color: rgba(21,21,21,.86);
+        }
+
+        .canvas-ui {
+            position: fixed;
+            z-index: 5;
+            left: clamp(20px, 4vw, 52px);
+            top: 94px;
+            max-width: min(440px, calc(100vw - 40px));
             pointer-events: none;
         }
 
-        .photo-item:hover::after {
+        .canvas-ui .kicker {
+            margin-bottom: 12px;
+            color: rgba(21,21,21,.44);
+            font-size: 11px;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+        }
+
+        .canvas-ui h1 {
+            margin: 0;
+            color: rgba(21,21,21,.92);
+            font-size: clamp(34px, 5vw, 72px);
+            line-height: .96;
+            letter-spacing: -0.06em;
+            font-weight: 700;
+        }
+
+        .canvas-ui p {
+            margin: 18px 0 0;
+            max-width: 360px;
+            color: rgba(21,21,21,.54);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .canvas-hud {
+            position: fixed;
+            z-index: 7;
+            right: clamp(18px, 3vw, 34px);
+            bottom: clamp(18px, 3vw, 34px);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            color: rgba(21,21,21,.56);
+            font-size: 11px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+
+        .canvas-hud span {
+            padding: 10px 12px;
+            border: 1px solid rgba(21,21,21,.1);
+            border-radius: 999px;
+            background: rgba(244,241,234,.72);
+            box-shadow: 0 18px 42px rgba(0,0,0,.06);
+            backdrop-filter: blur(14px);
+        }
+
+        .infinite-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            cursor: grab;
+            touch-action: none;
+            overflow: hidden;
+            perspective: 1200px;
+            user-select: none;
+        }
+
+        .infinite-canvas.is-dragging {
+            cursor: grabbing;
+        }
+
+        .canvas-world {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 0;
+            height: 0;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .canvas-card {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: var(--w);
+            height: var(--h);
+            border: 0;
+            padding: 0;
+            background: transparent;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            opacity: var(--opacity, 1);
+            transition:
+                opacity .3s ease,
+                filter .3s ease,
+                box-shadow .3s ease;
+            filter: saturate(.92) brightness(.96);
+        }
+
+        .canvas-card:focus-visible {
+            outline: 2px solid rgba(21,21,21,.75);
+            outline-offset: 5px;
+        }
+
+        .canvas-card:hover,
+        .canvas-card.is-focused {
+            z-index: 40;
+            filter: saturate(1.08) brightness(1.03);
+        }
+
+        .canvas-card img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid rgba(21,21,21,.08);
+            box-shadow: 0 26px 70px rgba(0,0,0,.18);
+            background: #ddd;
+            transform: translateZ(22px);
+            transition:
+                transform .38s cubic-bezier(.22,.9,.2,1),
+                box-shadow .38s ease;
+        }
+
+        .canvas-card:hover img,
+        .canvas-card.is-focused img {
+            transform: translateZ(42px) scale(1.035);
+            box-shadow: 0 34px 90px rgba(0,0,0,.26);
+        }
+
+        .canvas-card::after {
+            content: attr(data-label);
+            position: absolute;
+            left: 12px;
+            bottom: -28px;
+            color: rgba(21,21,21,.5);
+            font-size: 11px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: opacity .25s ease, transform .25s ease;
+        }
+
+        .canvas-card:hover::after,
+        .canvas-card.is-focused::after {
             opacity: 1;
+            transform: translateY(0);
         }
 
-        .photo-item--hero {
-            grid-column: span 7;
-            grid-row: span 4;
+        .zoom-meter {
+            position: fixed;
+            z-index: 7;
+            left: clamp(18px, 3vw, 34px);
+            bottom: clamp(18px, 3vw, 34px);
+            width: min(220px, calc(100vw - 36px));
+            color: rgba(21,21,21,.48);
+            font-size: 11px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            pointer-events: none;
         }
 
-        .photo-item--wide {
-            grid-column: span 5;
-            grid-row: span 2;
+        .zoom-meter-bar {
+            height: 3px;
+            margin-top: 10px;
+            border-radius: 999px;
+            background: rgba(21,21,21,.12);
+            overflow: hidden;
         }
 
-        .photo-item--tall {
-            grid-column: span 4;
-            grid-row: span 3;
+        .zoom-meter-fill {
+            display: block;
+            height: 100%;
+            width: var(--zoom-width, 42%);
+            border-radius: inherit;
+            background: rgba(21,21,21,.68);
         }
 
-        .photo-item--medium {
-            grid-column: span 4;
-            grid-row: span 2;
-        }
-
-        .photo-item--small {
-            grid-column: span 3;
-            grid-row: span 2;
-        }
-
-        @media (max-width: 1024px) {
-            .photo-mosaic {
-                grid-template-columns: repeat(6, minmax(0, 1fr));
-                grid-auto-rows: 100px;
+        @media (max-width: 760px) {
+            .canvas-ui {
+                top: 82px;
             }
 
-            .photo-item--hero {
-                grid-column: span 6;
-                grid-row: span 3;
+            .canvas-ui p {
+                display: none;
             }
 
-            .photo-item--wide,
-            .photo-item--tall,
-            .photo-item--medium {
-                grid-column: span 3;
-                grid-row: span 2;
-            }
-
-            .photo-item--small {
-                grid-column: span 3;
-                grid-row: span 2;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .photo-mosaic {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                grid-auto-rows: 140px;
-                gap: 10px;
-            }
-
-            .photo-item--hero,
-            .photo-item--wide,
-            .photo-item--tall,
-            .photo-item--medium,
-            .photo-item--small {
-                grid-column: span 2;
-                grid-row: span 2;
+            .canvas-hud {
+                display: none;
             }
         }
     </style>
@@ -158,68 +263,218 @@
         <a href="about.html">About</a>
         <a href="contact.html">Contact</a>
     </div>
-    <section class="page-hero">
-        <div class="page-kicker">visual notes / gallery</div>
-        <h1 class="page-title">图像是另一种会发光的日记。</h1>
-        <p class="page-desc">用更清晰的拼贴网格整理画面，大图做主视觉，小图补节奏，滚动时逐张浮现。</p>
-    </section>
 
-    <div class="photo-mosaic">
-        <figure class="photo-item photo-item--hero">
-            <img src="ff7/rb.jpg" alt="主视觉">
-        </figure>
-        <figure class="photo-item photo-item--wide">
-            <img src="ff7/re.jpg" alt="光影 01">
-        </figure>
-        <figure class="photo-item photo-item--tall">
-            <img src="ff7/c1.jpg" alt="构图 01">
-        </figure>
-        <figure class="photo-item photo-item--medium">
-            <img src="ff7/b.jpg" alt="瞬间 01">
-        </figure>
-        <figure class="photo-item photo-item--small">
-            <img src="ff7/a1.jpg" alt="细节 01">
-        </figure>
-        <figure class="photo-item photo-item--small">
-            <img src="ff7/a2.jpg" alt="细节 02">
-        </figure>
-        <figure class="photo-item photo-item--wide">
-            <img src="ff7/t3.jpg" alt="光影 02">
-        </figure>
-        <figure class="photo-item photo-item--medium">
-            <img src="ff7/t1.jpg" alt="街景 01">
-        </figure>
-        <figure class="photo-item photo-item--tall">
-            <img src="ff7/c2.jpg" alt="构图 02">
-        </figure>
-        <figure class="photo-item photo-item--small">
-            <img src="ff7/a.png" alt="插画 01">
-        </figure>
-        <figure class="photo-item photo-item--small">
-            <img src="ff7/c.png" alt="插画 02">
-        </figure>
-        <figure class="photo-item photo-item--medium">
-            <img src="ff7/s.png" alt="氛围 01">
-        </figure>
-        <figure class="photo-item photo-item--wide">
-            <img src="ff7/tt.png" alt="角色构图">
-        </figure>
+    <header class="canvas-ui">
+        <div class="kicker">visual notes / infinite canvas</div>
+        <h1>图像是可以漫游的日记。</h1>
+        <p>拖拽画布移动，滚轮缩放，点击图片聚焦。照片会以无限网格重复出现，像在一张没有边界的桌面上整理记忆。</p>
+    </header>
+
+    <main class="infinite-canvas" id="infiniteCanvas" aria-label="无限照片画布">
+        <div class="canvas-world" id="canvasWorld"></div>
+    </main>
+
+    <div class="zoom-meter" aria-hidden="true">
+        <span id="zoomText">zoom 100%</span>
+        <div class="zoom-meter-bar"><span class="zoom-meter-fill" id="zoomFill"></span></div>
+    </div>
+
+    <div class="canvas-hud" aria-hidden="true">
+        <span>Drag to pan</span>
+        <span>Wheel to zoom</span>
+        <span>Click to focus</span>
     </div>
 
     <script>
-        const items = document.querySelectorAll('.photo-item');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                entry.target.classList.add('is-visible');
-                observer.unobserve(entry.target);
-            });
-        }, { threshold: 0.15 });
+        const canvas = document.getElementById('infiniteCanvas');
+        const world = document.getElementById('canvasWorld');
+        const zoomText = document.getElementById('zoomText');
+        const zoomFill = document.getElementById('zoomFill');
 
-        items.forEach((item, index) => {
-            item.style.transitionDelay = `${Math.min(index * 50, 400)}ms`;
-            observer.observe(item);
+        const media = [
+            { src: 'ff7/rb.jpg', label: 'visual 01', w: 360, h: 235 },
+            { src: 'ff7/re.jpg', label: 'visual 02', w: 250, h: 330 },
+            { src: 'ff7/c1.jpg', label: 'visual 03', w: 300, h: 220 },
+            { src: 'ff7/b.jpg', label: 'visual 04', w: 230, h: 320 },
+            { src: 'ff7/a1.jpg', label: 'visual 05', w: 310, h: 230 },
+            { src: 'ff7/a2.jpg', label: 'visual 06', w: 245, h: 305 },
+            { src: 'ff7/t3.jpg', label: 'visual 07', w: 350, h: 220 },
+            { src: 'ff7/t1.jpg', label: 'visual 08', w: 240, h: 310 },
+            { src: 'ff7/c2.jpg', label: 'visual 09', w: 310, h: 230 },
+            { src: 'ff7/a.png', label: 'sketch 01', w: 230, h: 290 },
+            { src: 'ff7/c.png', label: 'sketch 02', w: 260, h: 260 },
+            { src: 'ff7/s.png', label: 'ambient 01', w: 340, h: 225 },
+            { src: 'ff7/tt.png', label: 'composition', w: 260, h: 335 },
+        ];
+
+        const basePositions = [
+            [-760, -460, -120], [-330, -510, 40], [130, -430, -70], [560, -500, 120], [930, -330, -40],
+            [-950, -80, 80], [-520, -120, -30], [-90, -60, 150], [330, -110, -100], [760, -20, 45],
+            [-720, 360, 130], [-260, 280, -90], [170, 340, 40], [620, 280, -140], [1040, 360, 100],
+        ];
+
+        const tileW = 1480;
+        const tileH = 980;
+        const state = {
+            x: 0,
+            y: 0,
+            scale: 1,
+            vx: 0,
+            vy: 0,
+            targetScale: 1,
+            dragging: false,
+            lastX: 0,
+            lastY: 0,
+            focused: null,
+        };
+
+        const cards = [];
+
+        function createCards() {
+            world.innerHTML = '';
+            cards.length = 0;
+            for (let gx = -1; gx <= 1; gx += 1) {
+                for (let gy = -1; gy <= 1; gy += 1) {
+                    basePositions.forEach((pos, index) => {
+                        const item = media[index % media.length];
+                        const button = document.createElement('button');
+                        button.className = 'canvas-card';
+                        button.type = 'button';
+                        button.dataset.label = item.label;
+                        button.style.setProperty('--w', `${item.w}px`);
+                        button.style.setProperty('--h', `${item.h}px`);
+                        button.setAttribute('aria-label', item.label);
+                        button.innerHTML = `<img src="${item.src}" alt="${item.label}" draggable="false">`;
+                        const data = {
+                            el: button,
+                            x: pos[0] + gx * tileW,
+                            y: pos[1] + gy * tileH,
+                            z: pos[2],
+                            rotation: ((index % 5) - 2) * 1.8,
+                        };
+                        button.addEventListener('click', () => focusCard(data));
+                        cards.push(data);
+                        world.appendChild(button);
+                    });
+                }
+            }
+        }
+
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
+        }
+
+        function wrapPosition(value, size) {
+            const half = size * 1.5;
+            if (value > half) return value - size * 3;
+            if (value < -half) return value + size * 3;
+            return value;
+        }
+
+        function focusCard(card) {
+            if (state.dragging) return;
+            cards.forEach((item) => item.el.classList.remove('is-focused'));
+            state.focused = card;
+            card.el.classList.add('is-focused');
+            state.x += (-card.x * state.scale - state.x) * 0.26;
+            state.y += (-card.y * state.scale - state.y) * 0.26;
+            state.targetScale = clamp(1.34, 0.45, 1.9);
+        }
+
+        function update() {
+            state.x += state.vx;
+            state.y += state.vy;
+            state.vx *= 0.88;
+            state.vy *= 0.88;
+            state.scale += (state.targetScale - state.scale) * 0.14;
+            state.x = wrapPosition(state.x, tileW * state.scale);
+            state.y = wrapPosition(state.y, tileH * state.scale);
+
+            const gridScale = clamp(state.scale, 0.7, 1.35);
+            document.body.style.setProperty('--grid-x', `${state.x * 0.08}px`);
+            document.body.style.setProperty('--grid-y', `${state.y * 0.08}px`);
+            document.body.style.setProperty('--grid-scale', gridScale);
+
+            world.style.transform = `translate3d(${state.x}px, ${state.y}px, 0) scale(${state.scale}) rotateX(1.5deg)`;
+
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            cards.forEach((card) => {
+                const screenX = vw / 2 + state.x + card.x * state.scale;
+                const screenY = vh / 2 + state.y + card.y * state.scale;
+                const dist = Math.hypot(screenX - vw / 2, screenY - vh / 2);
+                const fade = clamp(1 - (dist - Math.max(vw, vh) * 0.42) / 520, 0.18, 1);
+                card.el.style.setProperty('--opacity', fade.toFixed(3));
+                card.el.style.transform = `translate3d(${card.x}px, ${card.y}px, ${card.z}px) rotate(${card.rotation}deg)`;
+            });
+
+            const zoomPercent = Math.round(state.scale * 100);
+            zoomText.textContent = `zoom ${zoomPercent}%`;
+            zoomFill.style.setProperty('--zoom-width', `${((state.scale - 0.45) / (1.9 - 0.45)) * 100}%`);
+
+            requestAnimationFrame(update);
+        }
+
+        canvas.addEventListener('pointerdown', (event) => {
+            state.dragging = true;
+            state.lastX = event.clientX;
+            state.lastY = event.clientY;
+            canvas.classList.add('is-dragging');
+            canvas.setPointerCapture(event.pointerId);
         });
+
+        canvas.addEventListener('pointermove', (event) => {
+            if (!state.dragging) return;
+            const dx = event.clientX - state.lastX;
+            const dy = event.clientY - state.lastY;
+            state.x += dx;
+            state.y += dy;
+            state.vx = dx * 0.5;
+            state.vy = dy * 0.5;
+            state.lastX = event.clientX;
+            state.lastY = event.clientY;
+        });
+
+        function endDrag(event) {
+            state.dragging = false;
+            canvas.classList.remove('is-dragging');
+            if (event.pointerId !== undefined && canvas.hasPointerCapture(event.pointerId)) {
+                canvas.releasePointerCapture(event.pointerId);
+            }
+        }
+
+        canvas.addEventListener('pointerup', endDrag);
+        canvas.addEventListener('pointercancel', endDrag);
+        canvas.addEventListener('pointerleave', () => {
+            state.dragging = false;
+            canvas.classList.remove('is-dragging');
+        });
+
+        canvas.addEventListener('wheel', (event) => {
+            event.preventDefault();
+            const previousScale = state.targetScale;
+            const nextScale = clamp(previousScale - event.deltaY * 0.0012, 0.45, 1.9);
+            const rect = canvas.getBoundingClientRect();
+            const mx = event.clientX - rect.left - rect.width / 2;
+            const my = event.clientY - rect.top - rect.height / 2;
+            const ratio = nextScale / previousScale;
+            state.x = mx - (mx - state.x) * ratio;
+            state.y = my - (my - state.y) * ratio;
+            state.targetScale = nextScale;
+        }, { passive: false });
+
+        window.addEventListener('keydown', (event) => {
+            const amount = 64;
+            if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') state.vx += amount;
+            if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') state.vx -= amount;
+            if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') state.vy += amount;
+            if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') state.vy -= amount;
+            if (event.key.toLowerCase() === 'q') state.targetScale = clamp(state.targetScale - 0.12, 0.45, 1.9);
+            if (event.key.toLowerCase() === 'e') state.targetScale = clamp(state.targetScale + 0.12, 0.45, 1.9);
+        });
+
+        createCards();
+        update();
     </script>
     <script src="site.js"></script>
     <script src="nav.js"></script>

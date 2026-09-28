@@ -30,7 +30,7 @@ export default function InterestsApp() {
       <PageWipe />
 
       <div className="relative z-10 flex min-h-screen flex-col">
-        <header className="page-block flex flex-[0.88] flex-col items-center justify-center px-6 pt-24 text-center md:pt-28">
+        <header className="page-block flex flex-[0.66] flex-col items-center justify-end px-6 pb-8 pt-24 text-center md:pb-10 md:pt-28">
           <p className="mb-2 text-xs tracking-[0.32em] text-white/42 uppercase">Portfolio</p>
           <AnimatePresence mode="wait">
             <motion.div
@@ -46,10 +46,10 @@ export default function InterestsApp() {
           </AnimatePresence>
         </header>
 
-        <div className="page-block -mt-2 flex w-full shrink-0 flex-col items-center pb-20 md:-mt-4">
+        <div className="page-block flex w-full shrink-0 flex-col items-center pb-20">
           <EllipticGallery onActiveCardChange={handleActiveCard} onLeave={() => setLeaving(true)} />
           <p className="mt-4 text-[11px] tracking-[0.24em] text-white/28 uppercase">
-            Scroll to orbit · Click center to enter
+            Scroll or click arrows · Click focused card to enter · Infinite loop
           </p>
         </div>
       </div>
