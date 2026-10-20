@@ -21,8 +21,8 @@ function getLayout() {
   const spacing = isSmall ? 18 : Math.min(Math.max(vw * 0.018, 18), 30)
   const cardHeight = cardWidth / 0.72
   const bannerHeight = cardHeight + (isSmall ? 44 : 70)
-  const sideInset = isSmall ? vw * 0.16 : vw * 0.13
-  return { cardWidth, spacing, cardHeight, bannerHeight, sideInset, viewportWidth: vw }
+  const centerInset = vw / 2 - cardWidth / 2
+  return { cardWidth, spacing, cardHeight, bannerHeight, centerInset, viewportWidth: vw }
 }
 
 export default function EllipticGallery({ onActiveCardChange, onLeave }) {
@@ -127,7 +127,7 @@ export default function EllipticGallery({ onActiveCardChange, onLeave }) {
     goToPage(null, item.href)
   }
 
-  const trackX = layout.sideInset - index * itemStride
+  const trackX = layout.centerInset - index * itemStride
 
   return (
     <div ref={rootRef} className="elliptic-gallery-root relative w-full select-none overflow-hidden py-6">
@@ -181,6 +181,7 @@ export default function EllipticGallery({ onActiveCardChange, onLeave }) {
                   transform: `perspective(1200px) rotateY(${rotateY}deg) translateY(${translateY}px)`,
                   transformOrigin: distance < 0 ? 'right center' : distance > 0 ? 'left center' : 'center center',
                   opacity: Math.abs(distance) > 3 ? 0.45 : 1,
+                  zIndex: 10 - Math.abs(distance),
                 }}
                 onClick={() => handleCardClick(item, itemIndex)}
               >
