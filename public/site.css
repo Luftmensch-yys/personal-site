@@ -1,11 +1,11 @@
 :root {
-    --bg: #06060c;
-    --bg-soft: #0a0a12;
-    --ink: #e8eaef;
-    --muted: rgba(232, 234, 239, 0.58);
-    --line: rgba(255, 255, 255, 0.1);
-    --panel: rgba(255, 255, 255, 0.03);
-    --accent: #91defe;
+    --bg: #ffffff;
+    --bg-soft: #ffffff;
+    --ink: #171717;
+    --muted: rgba(23, 23, 23, 0.58);
+    --line: rgba(23, 23, 23, 0.1);
+    --panel: rgba(23, 23, 23, 0.03);
+    --accent: #176382;
     --accent-soft: rgba(145, 222, 254, 0.14);
     --glow-blue: rgba(90, 100, 150, 0.14);
     --glow-warm: rgba(196, 24, 48, 0.1);
@@ -33,7 +33,7 @@ body.unified-page {
     font-size: 12px;
     letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.38);
+    color: rgba(23, 23, 23, 0.38);
 }
 
 .page-title {
@@ -56,7 +56,7 @@ body.unified-page {
     padding: 32px;
     border: 1px solid var(--line);
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(23, 23, 23, 0.03);
 }
 
 .message-board {
@@ -78,17 +78,17 @@ body.unified-page {
 .message-field label {
     font-size: 13px;
     letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(23, 23, 23, 0.55);
 }
 
 .message-field input,
 .message-field textarea {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(23, 23, 23, 0.1);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.04);
-    color: #e8eaef;
+    background: rgba(23, 23, 23, 0.04);
+    color: #171717;
     font-family: inherit;
     font-size: 15px;
     outline: none;
@@ -97,13 +97,13 @@ body.unified-page {
 
 .message-field input::placeholder,
 .message-field textarea::placeholder {
-    color: rgba(255, 255, 255, 0.28);
+    color: rgba(23, 23, 23, 0.28);
 }
 
 .message-field input:focus,
 .message-field textarea:focus {
     border-color: rgba(145, 222, 254, 0.45);
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(23, 23, 23, 0.06);
 }
 
 .message-field textarea {
@@ -119,8 +119,8 @@ body.unified-page {
     padding: 12px 28px;
     border: none;
     border-radius: 10px;
-    background: #fff;
-    color: #06060c;
+    background: #171717;
+    color: #ffffff;
     font-family: inherit;
     font-size: 14px;
     font-weight: 500;
@@ -136,7 +136,7 @@ body.unified-page {
     margin-top: 16px;
     font-size: 13px;
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.38);
+    color: rgba(23, 23, 23, 0.38);
 }
 
 .message-toast {
@@ -145,10 +145,10 @@ body.unified-page {
     bottom: 32px;
     z-index: 300;
     padding: 12px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(23, 23, 23, 0.12);
     border-radius: 999px;
-    background: rgba(6, 6, 12, 0.92);
-    color: rgba(255, 255, 255, 0.88);
+    background: rgba(255, 255, 255, 0.92);
+    color: rgba(23, 23, 23, 0.88);
     font-size: 14px;
     opacity: 0;
     transform: translate(-50%, 12px);

@@ -1,17 +1,54 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="day">
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="init.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>yiyisa's space · Shark</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <title>yiyisa's space · Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@600&display=swap" rel="stylesheet" />
+    <style>
+      html, body { margin: 0; height: 100%; background: #000; }
+      canvas { display: block; width: 100vw; height: 100vh; font-family: "Geist Mono", ui-monospace, Menlo, monospace; }
+      html[data-theme="day"] { background: #fff; color-scheme: light; }
+      html[data-theme="day"] canvas { filter: invert(1) hue-rotate(180deg); }
+      #theme-toggle { position: fixed; top: 12px; right: 12px; z-index: 1; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; display: grid; place-items: center; }
+      #theme-toggle::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #fff; }
+      html[data-theme="day"] #theme-toggle::before { background: #171717; }
+      #theme-toggle:focus-visible { outline: 3px solid #4285f4; outline-offset: 3px; }
+      .home-nav { position: fixed; top: 0; left: 0; right: 56px; z-index: 1; display: flex; align-items: center; gap: 32px; padding: 18px 28px; font: 14px/1.5 system-ui, sans-serif; color: #a3a3a3; }
+      .home-nav a { color: inherit; text-decoration: none; }
+      .home-nav a:hover, .home-nav a[aria-current] { color: #fff; }
+      .home-nav .brand { margin-right: 16px; color: #fff; font-weight: 600; }
+      html[data-theme="day"] .home-nav { color: #666; }
+      html[data-theme="day"] .home-nav a:hover, html[data-theme="day"] .home-nav a[aria-current], html[data-theme="day"] .home-nav .brand { color: #171717; }
+      @media (max-width: 540px) { .home-nav { gap: 16px; padding: 16px; font-size: 12px; flex-wrap: wrap; } .home-nav .brand { flex-basis: 100%; margin-right: 0; } }
+      html, body { background: #fff; color: #171717; }
+      canvas { position: fixed; inset: 0; }
+      .home-copy { position: relative; z-index: 1; box-sizing: border-box; min-height: 100svh; padding: 140px 4vw 9vh; display: flex; flex-direction: column; justify-content: space-between; gap: 64px; pointer-events: none; font-family: system-ui, sans-serif; }
+      .home-copy h1 { margin: 0; font-size: clamp(48px, 6.5vw, 112px); font-weight: 500; line-height: 1.04; letter-spacing: -.055em; }
+      .home-intro p { margin: 0 0 28px; color: #626262; font-size: clamp(15px, 1.8vw, 26px); line-height: 1.6; }
+      .explore { display: inline-flex; align-items: center; gap: 24px; padding: 18px 30px; border-radius: 12px; background: #171717; color: #fff; text-decoration: none; font-size: 18px; pointer-events: auto; }
+      .explore:hover { background: #363636; }
+      .home-copy h1, .home-intro p { width: fit-content; background: #ffffffd9; box-shadow: 0 0 32px 16px #ffffffb0; }
+      @media (max-width: 540px) { .home-copy { padding: 140px 24px 48px; } .home-copy h1 { font-size: clamp(42px, 11vw, 60px); } .home-intro p { max-width: 270px; } }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <canvas aria-hidden="true"></canvas>
+    <nav class="home-nav" aria-label="主导航">
+      <a class="brand" href="index.html">yiyisa's space</a>
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="project.html">Project</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <main class="home-copy">
+      <h1>yiyisa's space<br>a little<br>corner.</h1>
+      <div class="home-intro">
+        <p>Just some things I like, and some things I make.</p>
+        <a class="explore" href="project.html">Explore Work <span aria-hidden="true">→</span></a>
+      </div>
+    </main>
+    <script type="module" src="/src/shark-main.ts"></script>
   </body>
 </html>

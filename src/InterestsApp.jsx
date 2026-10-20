@@ -14,7 +14,7 @@ export default function InterestsApp() {
   const handleActiveCard = useCallback((card) => setActiveCard(card), [])
 
   const shellClass = [
-    'page-shell interests-shell relative min-h-screen overflow-hidden bg-[#06060c] font-geist text-white',
+    'page-shell interests-shell relative min-h-screen overflow-hidden bg-white font-geist text-neutral-900',
     leaving ? 'is-leaving' : '',
     entering ? 'is-entering' : '',
     enterDone ? 'is-entering-done' : '',
@@ -24,14 +24,14 @@ export default function InterestsApp() {
 
   return (
     <main className={shellClass}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_100%,rgba(90,100,150,0.14),transparent_60%),linear-gradient(180deg,#06060c,#0a0a12)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_100%,rgba(90,100,150,0.14),transparent_60%),linear-gradient(180deg,#ffffff,#ffffff)]" />
 
       <SiteNav active="project" />
       <PageWipe />
 
       <div className="relative z-10 flex min-h-screen flex-col">
         <header className="page-block flex flex-[0.66] flex-col items-center justify-end px-6 pb-8 pt-24 text-center md:pb-10 md:pt-28">
-          <p className="mb-2 text-xs tracking-[0.32em] text-white/42 uppercase">Portfolio</p>
+          <p className="mb-2 text-xs tracking-[0.32em] text-neutral-900/42 uppercase">Portfolio</p>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCard.title}
@@ -41,14 +41,14 @@ export default function InterestsApp() {
               transition={{ duration: 0.4 }}
             >
               <h1 className="text-3xl font-medium tracking-tight md:text-5xl">{activeCard.title}</h1>
-              <p className="mt-3 max-w-md text-sm leading-relaxed text-white/50 md:text-base">{activeCard.desc}</p>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-neutral-900/50 md:text-base">{activeCard.desc}</p>
             </motion.div>
           </AnimatePresence>
         </header>
 
         <div className="page-block flex w-full shrink-0 flex-col items-center pb-20">
           <EllipticGallery onActiveCardChange={handleActiveCard} onLeave={() => setLeaving(true)} />
-          <p className="mt-4 text-[11px] tracking-[0.24em] text-white/28 uppercase">
+          <p className="mt-4 text-[11px] tracking-[0.24em] text-neutral-900/28 uppercase">
             Scroll or click arrows · Click focused card to enter · Infinite loop
           </p>
         </div>

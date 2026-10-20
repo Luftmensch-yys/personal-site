@@ -207,7 +207,7 @@ export default function ModelingApp() {
   }, [])
 
   const shellClass = [
-    'page-shell modeling-shell relative min-h-screen overflow-x-hidden bg-[#06060c] font-geist text-white',
+    'page-shell modeling-shell relative min-h-screen overflow-x-hidden bg-white font-geist text-neutral-900',
     leaving ? 'is-leaving' : '',
     entering ? 'is-entering' : '',
     enterDone ? 'is-entering-done' : '',
@@ -221,16 +221,16 @@ export default function ModelingApp() {
         .modeling-canvas-wrap{position:sticky;top:50%;transform:translateY(-50%);width:50vw;height:80vh;z-index:5;flex-shrink:0;cursor:grab}
         .modeling-canvas-wrap:active{cursor:grabbing}
         .modeling-hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.5rem 4rem}
-        .modeling-kicker{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:1rem}
-        .modeling-title{font-size:clamp(2.2rem,6vw,4.6rem);font-weight:500;line-height:1.08;letter-spacing:-.02em;color:#fff;margin-bottom:1.5rem}
-        .modeling-desc{max-width:34rem;font-size:clamp(.95rem,1.4vw,1.15rem);line-height:1.85;color:rgba(255,255,255,.55)}
+        .modeling-kicker{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(23, 23, 23,.42);margin-bottom:1rem}
+        .modeling-title{font-size:clamp(2.2rem,6vw,4.6rem);font-weight:500;line-height:1.08;letter-spacing:-.02em;color:#171717;margin-bottom:1.5rem}
+        .modeling-desc{max-width:34rem;font-size:clamp(.95rem,1.4vw,1.15rem);line-height:1.85;color:rgba(23, 23, 23,.55)}
         .modeling-stage{position:relative;min-height:180vh;display:flex;align-items:flex-start}
         .modeling-cat-text{position:sticky;top:50%;transform:translateY(-50%);max-width:25rem;padding:0 1.5rem;margin-left:8vw;flex-shrink:0}
-        .modeling-cat-label{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.9rem}
-        .modeling-cat-title{font-size:clamp(1.6rem,3vw,2.6rem);font-weight:500;color:#fff;margin-bottom:1.2rem;line-height:1.2}
-        .modeling-cat-body{font-size:clamp(.92rem,1.2vw,1.05rem);line-height:1.95;color:rgba(255,255,255,.5)}
-        .modeling-outro{min-height:70vh;display:flex;align-items:center;justify-content:flex-start;padding-left:max(8vw,2rem);color:rgba(255,255,255,.28);font-size:.9rem;letter-spacing:.1em}
-        .modeling-loading{position:absolute;right:0;top:50%;transform:translateY(-50%);width:50vw;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4);font-size:.8rem;letter-spacing:.2em;z-index:6}
+        .modeling-cat-label{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(23, 23, 23,.4);margin-bottom:.9rem}
+        .modeling-cat-title{font-size:clamp(1.6rem,3vw,2.6rem);font-weight:500;color:#171717;margin-bottom:1.2rem;line-height:1.2}
+        .modeling-cat-body{font-size:clamp(.92rem,1.2vw,1.05rem);line-height:1.95;color:rgba(23, 23, 23,.5)}
+        .modeling-outro{min-height:70vh;display:flex;align-items:center;justify-content:flex-start;padding-left:max(8vw,2rem);color:rgba(23, 23, 23,.28);font-size:.9rem;letter-spacing:.1em}
+        .modeling-loading{position:absolute;right:0;top:50%;transform:translateY(-50%);width:50vw;display:flex;align-items:center;justify-content:center;color:rgba(23, 23, 23,.4);font-size:.8rem;letter-spacing:.2em;z-index:6}
         @media (max-width:900px){
           .modeling-canvas-wrap{width:100vw;position:relative;top:auto;transform:none;height:60vh;order:-1}
           .modeling-stage{flex-direction:column}
@@ -240,7 +240,7 @@ export default function ModelingApp() {
       `}</style>
 
       {/* 背景光晕 */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_72%_42%,rgba(123,108,255,0.10),transparent_60%),linear-gradient(180deg,#06060c,#0a0a14)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_72%_42%,rgba(123,108,255,0.10),transparent_60%),linear-gradient(180deg,#ffffff,#ffffff)]" />
 
       <SiteNav active="project" onNavigate={() => setLeaving(true)} />
       <PageWipe />

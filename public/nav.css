@@ -16,14 +16,14 @@
 
 .site-nav-bordered {
     padding: 14px 18px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(23, 23, 23, 0.14);
     border-radius: 16px;
-    background: rgba(6, 6, 12, 0.45);
+    background: rgba(255, 255, 255, 0.45);
     backdrop-filter: blur(12px);
 }
 
 .site-nav-brand {
-    color: #fff;
+    color: #171717;
     font-size: 18px;
     font-weight: 600;
     letter-spacing: -0.03em;
@@ -37,7 +37,7 @@
 }
 
 .site-nav-links a {
-    color: rgba(255, 255, 255, 0.68);
+    color: rgba(23, 23, 23, 0.68);
     font-size: 14px;
     text-decoration: none;
     transition: color 0.25s ease;
@@ -45,7 +45,7 @@
 
 .site-nav-links a:hover,
 .site-nav-links a.is-active {
-    color: #fff;
+    color: #171717;
 }
 
 .site-nav-toggle {
@@ -58,7 +58,7 @@
     padding: 0;
     border: none;
     background: transparent;
-    color: #fff;
+    color: #171717;
     cursor: pointer;
 }
 
@@ -71,7 +71,7 @@
     justify-content: center;
     gap: 22px;
     padding: 80px 32px;
-    background: rgba(6, 6, 12, 0.96);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(16px);
     opacity: 0;
     pointer-events: none;
@@ -84,13 +84,13 @@
 }
 
 .site-nav-mobile a {
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(23, 23, 23, 0.78);
     font-size: 26px;
     font-family: "Geist", sans-serif;
     text-decoration: none;
 }
 
-.site-nav-mobile a.is-active { color: #fff; }
+.site-nav-mobile a.is-active { color: #171717; }
 
 @media (max-width: 767px) {
     .site-nav {
@@ -118,7 +118,7 @@ body.is-leaving .site-nav,
     inset: 0;
     z-index: 999;
     pointer-events: none;
-    background: #06060c;
+    background: #ffffff;
     opacity: 0;
     transition: opacity 0.42s ease;
 }
@@ -148,11 +148,11 @@ body.is-entering-done .page-transition-overlay {
 body.unified-page {
     min-height: 100vh;
     padding-top: 100px;
-    color: var(--ink, #e8eaef);
+    color: var(--ink, #171717);
     font-family: "Geist", "Microsoft YaHei", sans-serif;
     background:
         radial-gradient(ellipse 80% 50% at 50% 100%, rgba(90, 100, 150, 0.14), transparent 60%),
-        linear-gradient(180deg, #06060c, #0a0a12);
+        linear-gradient(180deg, #ffffff, #ffffff);
 }
 
 [data-reveal] {

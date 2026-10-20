@@ -45,7 +45,7 @@
 
         .contact-info p {
             margin: 6px 0;
-            color: rgba(255, 255, 255, 0.62);
+            color: rgba(23, 23, 23, 0.62);
             font-size: 14px;
             letter-spacing: 0.02em;
         }
@@ -90,19 +90,19 @@
             font-family: inherit;
             font-size: 14px;
             color: var(--ink);
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(23, 23, 23, 0.04);
             outline: none;
         }
 
         .sticky-compose input::placeholder,
         .sticky-compose textarea::placeholder {
-            color: rgba(255, 255, 255, 0.28);
+            color: rgba(23, 23, 23, 0.28);
         }
 
         .sticky-compose input:focus,
         .sticky-compose textarea:focus {
             border-color: rgba(145, 222, 254, 0.45);
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(23, 23, 23, 0.06);
         }
 
         .sticky-compose textarea {
@@ -115,7 +115,7 @@
             padding: 0 22px;
             border: none;
             border-radius: 10px;
-            background: #fff;
+            background: #171717;
             color: var(--bg);
             font-family: inherit;
             font-size: 14px;
@@ -132,7 +132,7 @@
         .sticky-compose-note {
             margin-top: 10px;
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.38);
+            color: rgba(23, 23, 23, 0.38);
         }
 
         .messages-container {
@@ -157,7 +157,7 @@
             max-width: 360px;
             border-radius: 4px;
             clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
-            box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.18);
+            box-shadow: 3px 3px 12px rgba(255, 255, 255, 0.18);
             cursor: grab;
             user-select: none;
             z-index: 1;
@@ -174,17 +174,17 @@
             height: 14px;
             background: #666;
             border-radius: 50%;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 1px 3px rgba(255, 255, 255, 0.25);
         }
 
         .sticky-note:hover {
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.28);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.28);
             z-index: 100;
         }
 
         .sticky-note.dragging {
             z-index: 9999 !important;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.42);
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.42);
             cursor: grabbing;
             transform: rotate(0deg) scale(1.02) !important;
         }
@@ -198,14 +198,14 @@
             border: 0;
             border-radius: 50%;
             background: transparent;
-            color: rgba(0, 0, 0, 0.6);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 23px;
             cursor: pointer;
             touch-action: manipulation;
         }
 
         .sticky-delete:hover, .sticky-delete:focus-visible {
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         button:disabled { opacity: 0.5; cursor: wait; }
@@ -240,20 +240,20 @@
 
         .sticky-author {
             font-weight: 700;
-            color: rgba(0, 0, 0, 0.72);
+            color: rgba(255, 255, 255, 0.72);
             font-size: 14px;
         }
 
         .sticky-time {
             font-size: 12px;
-            color: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.5);
             white-space: nowrap;
         }
 
         .sticky-content {
             font-size: 16px;
             line-height: 1.6;
-            color: rgba(0, 0, 0, 0.82);
+            color: rgba(255, 255, 255, 0.82);
             word-break: break-word;
             padding: 6px 0;
         }
@@ -284,7 +284,7 @@
             }
         }
     </style>
-</head>
+<style>html, body { background: #fff !important; color-scheme: light; }</style></head>
 <body class="unified-page message-page">
     <nav class="site-nav">
         <a href="index.html" class="site-nav-brand">yiyisa's space</a>
