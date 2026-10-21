@@ -17,6 +17,7 @@ export default defineConfig({
         music: 'music.html',
         craft: 'handmake.html',
         modeling: 'modeling.html',
+        showcase: 'showcase.html',
         game: 'games.html',
         ff7: 'final-fantasy-vii.html',
         p5r: 'persona-5-royal.html',

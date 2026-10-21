@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="height: 100%">
+<head>
+<meta charset="utf-8">
+<title>深圳租房地图可视化大屏 - 毕业生避坑幸福感版</title>
+<style>
+/* ==========================================================================
+   全局基础样式与复古纸张纹理
+   ========================================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+    height: 100vh; 
+    padding: 15px; 
+    background-color: #fef8ef; /* 复古米黄色背景 */
+    background-image: radial-gradient(#f3ece1 1px, transparent 0); /* 纸张网格点缀纹理 */
+    background-size: 24px 24px;
+    font-family: "Microsoft YaHei", sans-serif; 
+    color: #333; 
+    overflow: hidden; /* 隐藏滚动条，严格锁定一屏适配 */
+}
+
+/* ==========================================================================
+   顶部高级筛选控制栏
+   ========================================================================== */
+.top-filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: #f4edd2;
+    border-radius: 8px;
+    border: 2px solid #d5c29d;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.title-main {
+    font-size: 20px;
+    color: #89302b; /* 复古故宫红 */
+    font-weight: bold;
+}
+.filter-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.filter-item label {
+    margin-right: 6px;
+    color: #5c533f;
+    font-size: 14px;
+    font-weight: bold;
+}
+.filter-item select, .filter-item input {
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid #bda881;
+    color: #333;
+    border-radius: 4px;
+    font-size: 14px;
+}
+/* 限制月薪和租金输入框的宽度，防止挤压布局 */
+.filter-item input[type="number"] {
+    width: 105px;
+}
+.search-btn {
+    padding: 8px 20px;
+    background: #c15c3d;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.search-btn:hover {
+    background: #a94428;
+}
+
+/* ==========================================================================
+   大屏自适应网格布局 (左栏占主轴拉伸，右栏锁定36%黄金比例)
+   ========================================================================== */
+.big-container {
+    display: flex;
+    gap: 15px;
+    height: calc(100vh - 100px); /* 扣除顶部筛选控制栏高度 */
+}
+.left-column {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+}
+.right-column {
+    width: 36%; 
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+}
+
+/* 各图表组件占所在列的高度分配比例 */
+.map-card { height: 65%; border-top: 4px solid #d87a80; }
+.scatter-card { height: 33%; border-top: 4px solid #2ec7c9; }
+.kpi-card { height: 22%; border-top: 4px solid #ffb980; }
+.bar-card { height: 38%; border-top: 4px solid #5ab1ef; }
+.hist-pie-card { height: 38%; border-top: 4px solid #57bfa7; }
+
+/* 通用卡片卡复古框体样式 */
+.chart-card {
+    background: #fffdf8;
+    border: 1px solid #e1d7bc;
+    border-radius: 6px;
+    padding: 12px 14px;
+    box-shadow: 0 2px 8px rgba(180,160,120,0.1);
+    position: relative;
+}
+.chart-title {
+    font-size: 15px;
+    color: #4a453a;
+    font-weight: bold;
+    margin-bottom: 8px;
+    border-left: 4px solid #89302b;
+    padding-left: 8px;
+    height: 18px;
+    line-height: 18px;
+}
+.chart-box {
+    width: 100%;
+    height: calc(100% - 26px); /* 动态减去标题行高度，防止Canvas溢出容器 */
+}
+
+/* KPI数字看板专属网格 */
+.kpi-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    height: calc(100% - 26px);
+}
+.kpi-item {
+    background: #fbf8ef;
+    border-radius: 4px;
+    padding: 6px;
+    text-align: center;
+    border: 1px solid #e6dec9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.kpi-label {
+    font-size: 12px;
+    color: #7c7565;
+    margin-bottom: 2px;
+}
+.kpi-num {
+    font-size: 20px;
+    font-weight: bold;
+    color: #a94428;
+    transition: all 0.3s;
+}
+.load-tip {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: #89302b;
+    font-size: 16px;
+}
+.sub-tip {
+    float: right;
+    font-size: 12px;
+    color: #a94428;
+    font-weight: normal;
+}
+</style>
+</head>
+<body>
+
+<div class="top-filter">
+    <div class="title-main">深圳租房避坑大屏 (动态画像版)</div>
+    <div class="filter-row">
+        <div class="filter-item">
+            <label>月薪(元)</label>
+            <input type="number" id="userSalary" value="6500" min="2000" max="100000">
+        </div>
+        <div class="filter-item">
+            <label>选房偏好</label>
+            <select id="userPreference">
+                <option value="balance" selected>平衡型（时间金钱两手抓）</option>
+                <option value="money">省钱至上（能省就省，不怕远）</option>
+                <option value="time">时间无价（拒绝内耗，通勤短）</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>地图显色依据</label>
+            <select id="colorMode">
+                <option value="score" selected>幸福感评分 (算法驱动)</option>
+                <option value="rent">房屋绝对租金 (直观对比)</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>通勤上限(分钟)</label>
+            <select id="commuteTime">
+                <option value="30">30</option>
+                <option value="45">45</option>
+                <option value="60">60</option>
+                <option value="90">90</option>
+                <option value="120">120</option>
+                <option value="180" selected>全部</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>最高租金</label>
+            <input type="number" id="maxPrice" value="8000" min="1243" max="8000">
+        </div>
+        <button class="search-btn" id="searchBtn">刷新全部图表</button>
+    </div>
+</div>
+
+<div class="big-container">
+    <div class="left-column">
+        <div class="chart-card map-card">
+            <div class="chart-title" id="map-title">深圳房源地理分布</div>
+            <div id="map-chart" class="chart-box">
+                <div class="load-tip">正在加载地图与房源数据...</div>
+            </div>
+        </div>
+
+        <div class="chart-card scatter-card">
+            <div class="chart-title" id="scatter-title">通勤时长 — 租金相关性分析 (全市)</div>
+            <div id="corr-chart" class="chart-box"></div>
+        </div>
+    </div>
+
+    <div class="right-column">
+        <div class="chart-card kpi-card">
+            <div class="chart-title" id="kpi-title">核心数据指标 (全市)</div>
+            <div class="kpi-wrap">
+                <div class="kpi-item"><div class="kpi-label">总房源数量</div><div class="kpi-num" id="kpi-total">0</div></div>
+                <div class="kpi-item"><div class="kpi-label">平均月租金</div><div class="kpi-num" id="kpi-avg">0</div></div>
+                <div class="kpi-item"><div class="kpi-label">最低租金</div><div class="kpi-num" id="kpi-min">0</div></div>
+                <div class="kpi-item"><div class="kpi-label">最高租金</div><div class="kpi-num" id="kpi-max">0</div></div>
+            </div>
+        </div>
+
+        <div class="chart-card bar-card">
+            <div class="chart-title">各区平均租金对比 <span class="sub-tip">💡 点击柱子下钻联动各图表</span></div>
+            <div id="bar-chart" class="chart-box"></div>
+        </div>
+
+        <div class="chart-card hist-pie-card">
+            <div class="chart-title" id="pie-title">租金分段房源数量分布 (全市)</div>
+            <div id="hist-pie-chart" class="chart-box"></div>
+        </div>
+    </div>
+</div>
+
+<script src="js/echarts.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/vintage.js"></script> <script>
+// ==========================================================================
+// 全局核心状态及静态基准常量声明
+// ==========================================================================
+const RENT_MIN = 1243;               // 全市数据集统计最低房租
+const RENT_MAX = 8000;               // 全市数据集统计最高房租
+const CUSTOM_CENTER = [113.954, 22.540]; // 终点核心锚点坐标（深圳南山高新园地铁站）
+
+let allRawData = [];                 // 持久化保存读入的原始 JSON 完整房源总数组
+let currentFilteredData = [];         // 保存多级清洗过滤、计算好幸福感分数后的当前显示集
+let chartIns = {};                   // 缓存全部初始化完成的 ECharts 实例对象的全局词典
+let selectedDistrict = null;         // 当前通过柱状图下钻锁定的特定“行政区名”，null代表全局态
+
+/**
+ * 初始化核心函数：注册各图表实例并绑定全局跨组件交互逻辑
+ */
+function initAllChart() {
+    chartIns.map = echarts.init(document.getElementById("map-chart"), 'vintage');
+    chartIns.bar = echarts.init(document.getElementById("bar-chart"), 'vintage');
+    chartIns.corr = echarts.init(document.getElementById("corr-chart"), 'vintage');
+    chartIns.histPie = echarts.init(document.getElementById("hist-pie-chart"), 'vintage');
+    
+    // 自动重绘响应式监听：保证大屏即使在不同分辨率或缩放的显示器下也绝不产生Canvas挤压变形
+    $(window).resize(() => Object.values(chartIns).forEach(v => v.resize()));
+
+    // 【柱状图点击下钻联动】点击柱子执行区级视角穿透，再次点击同一个柱子返回全市
+    chartIns.bar.on('click', function (params) {
+        if (params.componentType === 'series') {
+            const clickedDistrict = params.name;
+            if (selectedDistrict === clickedDistrict) {
+                selectedDistrict = null; 
+            } else {
+                selectedDistrict = clickedDistrict;
+            }
+            updateChartsByDistrict();
+        }
+    });
+
+    // ==========================================================================
+    // 💡 亮点功能 3：地图散点点击页面穿透跳转机制（带智能百度搜索兜底）
+    // ==========================================================================
+    chartIns.map.on('click', function (params) {
+        // 判定边界：必须点击在散点数据序列上，规避点击到空白底图时误触
+        if (params.componentType === 'series' && params.seriesName === '租房房源') {
+            const rawItem = params.data; // 截取该散点的原始 JSON 数据对象
+            
+            // 如果 JSON 数据里确实封装了真实的三方租房详情链接（如链家、自如 URL）
+            if (rawItem && rawItem.url) {
+                window.open(rawItem.url, '_blank'); // 开辟独立新标签页进行跳转，不中断当前大屏状态
+            } else {
+                // 🚀 智能工程容错兜底：若暂配无对应URL，全自动抽取小区名拼接出百度租房定向搜索链接
+                const fallbackUrl = `https://www.baidu.com/s?wd=${encodeURIComponent('深圳 ' + rawItem.name + ' 租房')}`;
+                window.open(fallbackUrl, '_blank');
+            }
+        }
+    });
+}
+
+/**
+ * 算法优化：地理网格重叠抖动纠偏（Geographic Jittering）
+ * 核心原理：解决同一大厦、高密城中楼同一坐标下大量房源重合，导致散点完全重叠掩盖的视觉Bug。
+ */
+function offsetSameCoord(dataList) {
+    const coordMap = {};
+    return dataList.map(item => {
+        const lng = item.value[0];
+        const lat = item.value[1];
+        const key = lng.toFixed(4) + "_" + lat.toFixed(4);
+        if (!coordMap[key]) coordMap[key] = 0;
+        // 数学振幅抖动：生成不偏移当前街道区位的超微随机量，使高密度点阵天然错开，视觉上层层舒展
+        const randomLng = (Math.random() - 0.5) * 0.0012;
+        const randomLat = (Math.random() - 0.5) * 0.0012;
+        coordMap[key]++;
+        return {
+            ...item,
+            value: [lng + randomLng, lat + randomLat, item.value[2], item.value[3]] 
+        }
+    })
+}
+
+/**
+ * 异步数据流水线：第一步，利用 Ajax 解析全市房源汇总通勤底层本地数据文件
+ */
+function loadHouseJson() {
+    $.getJSON("shenzhen.json")
+    .done(data => {
+        allRawData = data;
+        loadShenzhenGeo(); // 流水线第二步：拉取配套的地图空间拓扑网
+    })
+    .fail(err => {
+        alert("JSON加载失败！请确保JSON数据文件与当前html文件在同一个文件夹，且通过 Live Server 打开。");
+    })
+}
+
+/**
+ * 异步数据流水线：第二步，调取高精度的深圳行政边界 GeoJSON 进行多图层拓扑注册
+ */
+function loadShenzhenGeo() {
+    $.getJSON("shenzhen-map.json")
+    .done(szGeo => {
+        echarts.registerMap("shenzhen", szGeo); // 动态向 ECharts 内核注册底图骨架
+        $(".load-tip").remove();               // 移除首屏等待白幕
+        initAllChart();                        // 激活各 Canvas 引擎
+        $("#searchBtn").click();               // 模拟首次查询，执行渲染闭环
+    })
+    .fail(() => alert("深圳地图网络加载失败"))
+}
+
+/**
+ * ==========================================================================
+ * 💡 亮点功能 4：多维加权“租房幸福感指数算法（Happiness Index Model）”
+ * ==========================================================================
+ */
+function getHappinessScore(rent, time, preference, salary) {
+    // 🚀【核心策略：一票否决熔断控制】
+    // 现实场景推推演：若月度租金开销直接跨越了当前月薪的 50%（财务崩溃），哪怕通勤零内耗，也直接归入锁死超低 15 分坑区！
+    if (rent / salary > 0.5) {
+        return 15; 
+    }
+
+    // 1. 动态财务控制力得分模型：将房租严格控制在月度净收入的 1/3（33.3%）视为最安全的满分态
+    let financeScore = 100;
+    const rentRatio = rent / salary;
+    if (rentRatio <= 0.3) {
+        financeScore = 100;
+    } else if (rentRatio <= 0.5) {
+        financeScore = 100 - (rentRatio - 0.3) * 350; // 越过1/3生存线后，财务质量呈线性痛苦扣分
+    }
+
+    // 2. 通勤损耗扣分模型：单程高新园地铁通勤在 25 分钟内为无感满分状态，超过 45 分钟产生显著内耗
+    let commuteScore = 100;
+    if (time <= 25) {
+        commuteScore = 100;
+    } else if (time <= 60) {
+        commuteScore = 100 - (time - 25) * 1.8;
+    } else {
+        commuteScore = Math.max(0, 37 - (time - 60) * 0.5); // 极端长通勤兜底低分分
+    }
+
+    // 3. 多元用户偏好选择：组合不同的数学加权矩阵
+    let w_finance = 0.5;
+    let w_commute = 0.5;
+    if (preference === 'money') { w_finance = 0.75; w_commute = 0.25; } // 省钱型：大幅放大金钱话语权
+    if (preference === 'time') { w_finance = 0.25; w_commute = 0.75; }  // 时间型：大幅偏向通勤舒适度
+
+    return Math.round(financeScore * w_finance + commuteScore * w_commute);
+}
+
+/**
+ * 事件响应中心：点击“刷新全部图表”，拦截表单并触发全级联刷新
+ */
+$("#searchBtn").click(() => {
+    selectedDistrict = null; // 重置下钻锁，回归全市宽视野
+    const maxTime = Number($("#commuteTime").val());
+    const maxRent = Number($("#maxPrice").val());
+    const preference = $("#userPreference").val(); 
+    const salary = Number($("#userSalary").val()) || 6500; // 💡 捕获动态表单的用户最新月薪输入
+    const colorMode = $("#colorMode").val();              // 💡 捕获设定的显色依据
+
+    // 💡 动态修正主地图外壳标题，增强答辩时的交互视觉冲击力
+    if (colorMode === "score") {
+        $("#map-title").text(`深圳房源地理分布（当前画像：月薪 ${salary} 元，幸福感色标：金/红表示高匹配度，灰表示黑洞坑区）`);
+    } else {
+        $("#map-title").text(`深圳房源地理分布（当前画像：传统租金热力色标，红表示价格高昂，绿/蓝表示经济实惠）`);
+    }
+
+    // 海量底层数据进行级联清洗、清洗过滤，并在 Map 闭包中同步注入最新的加权算法分
+    currentFilteredData = allRawData.filter(item => {
+        const rent = item.value[2];
+        return item.time <= maxTime && rent >= RENT_MIN && rent <= maxRent;
+    }).map(item => {
+        const rent = item.value[2];
+        const time = item.time;
+        const score = getHappinessScore(rent, time, preference, salary); // 动态算法求解
+        return {
+            ...item,
+            // 重新重构 ECharts 底层标准矩阵的 value 指标维 [经度, 纬度, 租金, 幸福感分数]
+            value: [item.value[0], item.value[1], rent, score] 
+        };
+    });
+
+    currentFilteredData = offsetSameCoord(currentFilteredData); // 点阵错开
+
+    if (currentFilteredData.length === 0) {
+        alert("无匹配房源，请放宽筛选条件");
+        return;
+    }
+
+    // 对过滤的清洗子集按区执行哈希 Map 聚合，重算各行政区的加权均价
+    const districtMap = {};
+    currentFilteredData.forEach(d => {
+        const dis = d.district;
+        if (!districtMap[dis]) districtMap[dis] = { count: 0, sumRent: 0 };
+        districtMap[dis].count++;
+        districtMap[dis].sumRent += d.value[2];
+    });
+    const disList = Object.keys(districtMap);
+    const disAvgData = disList.map(k => ({
+        name: k,
+        avg: Math.round(districtMap[k].sumRent / districtMap[k].count),
+        count: districtMap[k].count
+    })).sort((a, b) => b.avg - a.avg); // 降序排列
+
+    renderBar(disAvgData);          // 重绘右侧柱状对比图
+    updateChartsByDistrict();       // 分发各子组件同步执行刷新
+});
+
+/**
+ * 分发总线中心：控制KPI模块、二维散点、玫瑰图在“全市态/特定行政区态”间的无缝转换
+ */
+function updateChartsByDistrict() {
+    let displayData = currentFilteredData;
+    let scopeText = "全市";
+
+    // 局部视图裁剪：如命中柱子触发的行政区锁定，过滤出对应行政区独立子集
+    if (selectedDistrict) {
+        displayData = currentFilteredData.filter(d => d.district === selectedDistrict);
+        scopeText = selectedDistrict;
+    }
+
+    // 动态同步大屏所有模块的二级看板小标题
+    $("#kpi-title").text(`核心数据指标 (${scopeText})`);
+    $("#scatter-title").text(`通勤时长 — 租金相关性分析 (${scopeText})`);
+    $("#pie-title").text(`租金分段房源数量分布 (${scopeText})`);
+
+    if (displayData.length === 0) {
+        $("#kpi-total").text(0); $("#kpi-avg").text(0); $("#kpi-min").text(0); $("#kpi-max").text(0);
+        renderCorr([]);
+        renderHistPie(0, 0, 0);
+        return;
+    }
+
+    // 数学处理各核心数值
+    const rentArr = displayData.map(d => d.value[2]);
+    const total = displayData.length;
+    const avgRent = Math.round(rentArr.reduce((s, v) => s + v, 0) / total);
+    const minRent = Math.min(...rentArr);
+    const maxR = Math.max(...rentArr);
+    
+    // 执行缓动数值滚动
+    animateValue("#kpi-total", total);
+    animateValue("#kpi-avg", avgRent);
+    animateValue("#kpi-min", minRent);
+    animateValue("#kpi-max", maxR);
+
+    // 重算分段区间频数
+    const seg1 = displayData.filter(d => d.value[2] < 3000).length;
+    const seg2 = displayData.filter(d => d.value[2] >= 3000 && d.value[2] <= 5000).length;
+    const seg3 = displayData.filter(d => d.value[2] > 5000).length;
+
+    // 驱动关联图表进行最终的 Canvas 画面重叠擦除与重绘
+    renderMap(displayData);
+    renderCorr(displayData);
+    renderHistPie(seg1, seg2, seg3);
+    highlightBar(); // 同步高亮选中柱体
+}
+
+/**
+ * 高性能大屏数值缓动生成器 (基于 requestAnimationFrame 进行性能节流防撕裂)
+ */
+function animateValue(id, endVal) {
+    let startVal = parseInt($(id).text()) || 0;
+    if(startVal === endVal) return;
+    let duration = 400; 
+    let startTime = null;
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        let progress = Math.min((timestamp - startTime) / duration, 1);
+        $(id).text(Math.floor(progress * (endVal - startVal) + startVal));
+        if (progress < 1) { window.requestAnimationFrame(step); }
+    }
+    window.requestAnimationFrame(step);
+}
+
+/**
+ * 控制柱状图高亮，使用户点击的柱体呈高亮橘红色，其余行政区回归商务浅蓝，构筑视觉焦点
+ */
+function highlightBar() {
+    chartIns.bar.setOption({
+        series: [{
+            itemStyle: {
+                color: function(params) {
+                    if (selectedDistrict && params.name === selectedDistrict) {
+                        return '#c15c3d'; 
+                    }
+                    return '#5ab1ef'; 
+                }
+            }
+        }]
+    });
+}
+
+/**
+ * 核心重构绘图逻辑：主渲染大屏中心 GIS 空间散点图
+ */
+function renderMap(data) {
+    // ==========================================================================
+    // 💡 亮点功能 5：解耦双模核心控制阀（根据用户模式决定色彩空间、阈值、和数组读取维度）
+    // ==========================================================================
+    const colorMode = $("#colorMode").val() || "score";
+    
+    let vmMin = 15, vmMax = 100;
+    let vmText = ["高幸福感", "避坑黑洞"];
+    let vmInRangeColor = ["#a0aab5", "#7fa2cc", "#f5cc36", "#ff7300", "#d61c1c"]; // 灰暗淡出，金红聚焦
+    let vmDimension = 3; // 对应数据矩阵的第 4 维索引 (value[3] 即 score 幸福感分数)
+
+    if (colorMode === "rent") {
+        vmMin = RENT_MIN; 
+        vmMax = RENT_MAX;
+        vmText = ["高昂租金", "经济低廉"];
+        // 传统绝对价格色法：低房租显安全绿色/水蓝，高昂租金渐变成严厉的警示大红
+        vmInRangeColor = ["#2b821d", "#5ab1ef", "#f5cc36", "#ff7300", "#d61c1c"]; 
+        vmDimension = 2; // 对应数据矩阵的第 3 维索引 (value[2] 即 rent 房屋绝对租金)
+    }
+
+    const opt = {
+        animation: true,
+        animationDuration: 800,
+        tooltip: {
+            show: true,
+            backgroundColor: "rgba(255,255,255,0.95)",
+            textStyle: { color: "#333" },
+            borderColor: "#ccc",
+            borderWidth: 1,
+            transitionDuration: 0, // 消除延迟贴合，极大程度增强数千点位飞速划过时的流畅度
+            hideDelay: 0,          
+            formatter(params) {
+                if (params.seriesName === "高新园终点") return `<strong>高新园地铁站（终点）</strong>`;
+                const d = params.data;
+                if(!d || !d.name) return '';
+                // 在浮窗提示中，整合输出多层级的避坑文本诊断报告
+                let evaluation = d.value[3] >= 80 ? "🔥 极力推荐（高幸福感）" : (d.value[3] >= 55 ? "⚖️ 性价比平平" : "⚠️ 避坑黑洞区");
+                return `小区：${d.name}<br>区县：${d.district}<br>租金：${d.value[2]}元<br>通勤：${d.time}分钟<br><strong>幸福感评分：${d.value[3]}分 (${evaluation})</strong>`
+            }
+        },
+        visualMap: {
+            min: vmMin, max: vmMax, calculable: true,
+            left: 15, bottom: 15, text: vmText,
+            inRange: { color: vmInRangeColor },
+            dimension: vmDimension, // 💡 亮点驱动核心：根据选择，动态将色彩渲染管线绑定到不同维度的数值上
+            seriesIndex: [0] 
+        },
+        geo: {
+            map: "shenzhen", roam: true, zoom: 1.1, center: CUSTOM_CENTER, 
+            label: { 
+                show: true, 
+                color: '#4a453a', 
+                fontSize: 12      
+            },
+            tooltip: { show: false }, 
+            itemStyle: { areaColor: "#f7f4eb", borderColor: "#d2c7ac", borderWidth: 1 },
+            emphasis: { disabled: true } // 锁死底层行政区悬浮变色，提升大屏底图视觉稳定性
+        },
+        series: [
+            {
+                name: "租房房源", type: "scatter", coordinateSystem: "geo",
+                data, 
+                // 💡 亮点：符号大小联动函数。分高的优质盘放大展现；分低内耗的垃圾坑区点自动缩小至边缘化，从视觉上被稀释
+                symbolSize: function (val) {
+                    let score = val[3];
+                    if (score >= 80) return 9;   
+                    if (score >= 50) return 6;   
+                    return 3.5;                  
+                }, 
+                itemStyle: { opacity: 0.8 }, 
+                zlevel: 5,
+                tooltip: { show: true, trigger: "item" } 
+            },
+            // 利用 effectScatter 加载带有炫酷动态等离子呼吸扩散波纹的通勤终点标记
+            {
+                name: "高新园终点", type: 'effectScatter', coordinateSystem: 'geo', 
+                data: [{ name: '高新园地铁站', value: CUSTOM_CENTER }],
+                symbolSize: 12, showEffectOn: 'render', 
+                rippleEffect: { scale: 3.5, period: 2.5, brushType: 'stroke' },
+                itemStyle: { color: '#00ecff', shadowBlur: 10, shadowColor: '#00ecff' },
+                zlevel: 99,
+                tooltip: { show: true, trigger: "item" } 
+            }
+        ]
+    };
+    chartIns.map.setOption(opt, true);
+
+    // 体验修复性补丁：处理鼠标急速划出图表 Canvas 边缘时，散点 Tooltip 残留无法隐去的 ECharts 经典边界 Bug
+    chartIns.map.getZr().on('mousemove', function (params) {
+        if (!params.target) {
+            chartIns.map.dispatchAction({ type: 'hideTip' });
+        }
+    });
+    chartIns.map.getZr().on('globalout', function () {
+        chartIns.map.dispatchAction({ type: 'hideTip' });
+    });
+}
+
+/**
+ * 绘图逻辑：绘制右侧各行政区均价对比柱状图
+ */
+function renderBar(disData) {
+    const xAxis = disData.map(d => d.name);
+    const yData = disData.map(d => d.avg);
+    
+    // 动态期望求解：根据当下筛选出来的各区套数与均价，加权计算出动态的全市总平均参考数
+    const totalCount = disData.reduce((sum, item) => sum + item.count, 0);
+    const totalRent = disData.reduce((sum, item) => sum + (item.avg * item.count), 0);
+    const cityAvg = totalCount > 0 ? Math.round(totalRent / totalCount) : 0;
+
+    const opt = {
+        animation: true,
+        animationDuration: 1000,
+        tooltip: { trigger: "axis" },
+        grid: { top: "18%", bottom: "18%", left: "15%", right: "8%" },
+        xAxis: { type: "category", data: xAxis, axisLabel: { interval: 0, rotate: 30 } },
+        yAxis: { type: "value", name: "平均租金(元)" },
+        series: [{ 
+            type: "bar", 
+            data: yData, 
+            barWidth: "50%",
+            label: { show: true, position: 'top', valueAnimation: true, fontSize: 11 },
+            // 💡 亮点功能 6：利用 markLine 动态贯穿并在柱体上架设横向全市均价红色虚线线
+            markLine: {
+                symbol: ['none', 'none'], // 隐藏线两端箭头
+                label: {
+                    position: 'end',
+                    formatter: `全市平均: {c}元`,
+                    color: '#89302b',
+                    fontWeight: 'bold',
+                    fontSize: 11
+                },
+                lineStyle: {
+                    type: 'dashed',
+                    color: '#89302b',
+                    width: 2
+                },
+                data: [
+                    { yAxis: cityAvg } // 绑定纵轴高度
+                ]
+            }
+        }]
+    };
+    chartIns.bar.setOption(opt, true);
+}
+
+/**
+ * 绘图逻辑：直角坐标系下二维经济与时间成本散点相关性博弈分析
+ */
+function renderCorr(data) {
+    const corrData = data.map(d => [d.time, d.value[2]]); // 解析出纯粹的二维直角物理坐标 [时间, 房租]
+    const opt = {
+        animation: true,
+        animationDuration: 600,
+        tooltip: { 
+            trigger: "item", 
+            backgroundColor: "rgba(255,255,255,0.95)",
+            textStyle: { color: "#333" },
+            borderColor: "#ccc",
+            borderWidth: 1,
+            formatter: function (params) {
+                const val = params.data; 
+                if (!val) return '';
+                return `通勤：<strong>${val[0]}</strong> 分钟<br>租金：<strong>${val[1]}</strong> 元`;
+            }
+        },
+        grid: { top: "20%", bottom: "20%", left: "12%", right: "10%" },
+        xAxis: { name: "通勤(分)", type: "value" },
+        yAxis: { name: "月租金(元)", type: "value" },
+        series: [{
+            type: "scatter", data: corrData, symbolSize: 5, opacity: 0.6,
+            itemStyle: { color: '#2ec7c9' }
+        }]
+    };
+    chartIns.corr.setOption(opt, true);
+}
+
+/**
+ * 绘图逻辑：绘制右下角南丁格尔环状极坐标玫瑰饼图（半径和弧度双驱反映数据梯度）
+ */
+function renderHistPie(s1, s2, s3) {
+    const opt = {
+        animation: true,
+        animationDuration: 1000,
+        tooltip: { trigger: "item", formatter: "{b} : {c}套 ({d}%)" },
+        legend: { bottom: '0', left: 'center', data: ["1243-3000元", "3000-5000元", "5000-8000元"] },
+        series: [{
+            name: "租金分段",
+            type: "pie",
+            radius: ["30%", "65%"], // 挖空圆心中心，构筑空心环状效果
+            center: ["50%", "45%"],
+            roseType: 'radius',     // 核心开关：激活南丁格尔玫瑰图算法
+            data: [
+                { value: s1, name: "1243-3000元" },
+                { value: s2, name: "3000-5000元" },
+                { value: s3, name: "5000-8000元" }
+            ],
+            label: { show: true, formatter: '{b}\n{c}套' },
+            itemStyle: { borderColor: "#fffdf8", borderWidth: 2 }, // 卡片底色做防黏连分割描边
+            labelLine: { show: true }
+        }]
+    };
+    chartIns.histPie.setOption(opt, true);
+}
+
+// ==========================================================================
+// 网页就绪生命周期入口
+// ==========================================================================
+$(document).ready(() => {
+    loadHouseJson(); // 执行数据流水线首发总线
+});
+</script>
+</body>
+</html>

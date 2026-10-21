@@ -8,6 +8,7 @@ export const ROUTES = {
   music: 'music.html',
   craft: 'handmake.html',
   modeling: 'modeling.html',
+  showcase: 'showcase.html',
   more: 'more.html',
 }
 
@@ -48,11 +49,11 @@ export const PROJECT_ITEMS = [
     img: 'make/cover.png',
   },
   {
-    title: 'MODELING',
-    label: '建模',
-    desc: '由于一些模型体积过大，并没有将其放上来，仍在新增中。。。',
-    href: ROUTES.modeling,
-    img: 'modeling/cover.png',
+    title: 'PROJECT SHOWCASE',
+    label: '项目展示',
+    desc: '用可以体验的项目呈现解决问题的过程：从租房与通勤决策，到更多应用实践。',
+    href: ROUTES.showcase,
+    img: 'projects/shenzhen-rental-preview.png',
   },
   {
     title: 'Next Room',
