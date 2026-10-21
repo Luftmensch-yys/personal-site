@@ -53,9 +53,9 @@ export default function ShowcaseApp() {
             <div><h2 id="p5r-title">P5R · 怪盗留言板</h2><p className="showcase-subtitle">从“你相信怪盗团存在吗”开始，让同好有话可聊。</p></div>
             <a className="showcase-action" href="https://github.com/Luftmensch-yys/p5r-phantom-forum" target="_blank" rel="noopener noreferrer">项目源码 <Github size={19} /></a>
           </div>
-          <a className="showcase-preview" href={`${BASE}projects/p5r/vote.png`} target="_blank" rel="noopener noreferrer" aria-label="查看怪盗留言板投票截图大图">
+          <a className="showcase-preview" href={`${BASE}projects/p5r/vote-v3.png`} target="_blank" rel="noopener noreferrer" aria-label="查看怪盗留言板投票截图大图">
             <div className="showcase-browser"><span /><span /><span /><p>P5R / PHANTOM COMMUNITY</p><ArrowUpRight size={16} /></div>
-            <img src={`${BASE}projects/p5r/vote.png`} alt="P5R 红黑主题投票界面：怪盗团是否真实存在，选择按钮和投票比例" width="1440" height="1000" loading="lazy" />
+            <img src={`${BASE}projects/p5r/vote-v3.png`} alt="P5R 红黑主题投票界面：怪盗团是否真实存在，选择按钮和投票比例" width="1440" height="1000" loading="lazy" />
           </a>
           <div className="showcase-details">
             <section><p className="showcase-label">THE PROBLEM / 用户痛点</p><h3>喜欢同一部作品，如何开启交流？</h3><p>单向浏览内容很难形成讨论。同好需要容易参与的话题入口，也需要能接着聊、找到自己发言的交流空间。</p></section>
@@ -63,7 +63,7 @@ export default function ShowcaseApp() {
           </div>
           <div className="showcase-features"><span>主题投票与比例统计</span><span>留言与回复</span><span>账号与个人资料</span><span>动态星形背景</span></div>
           <div className="p5r-gallery">
-            {[['comments','留言与回复'],['profile','个人资料与发言记录'],['login','账号登录']].map(([file,label]) => <a key={file} href={`${BASE}projects/p5r/${file}.png`} target="_blank" rel="noopener noreferrer"><img src={`${BASE}projects/p5r/${file}.png`} alt={`P5R ${label}实际界面`} loading="lazy" /><span>{label} <ArrowUpRight size={13}/></span></a>)}
+            {[['comments','留言与回复'],['profile','个人资料与发言记录'],['login','账号登录']].map(([file,label]) => <a key={file} href={`${BASE}projects/p5r/${file}-v3.png`} target="_blank" rel="noopener noreferrer"><img src={`${BASE}projects/p5r/${file}-v3.png`} alt={`P5R ${label}实际界面`} loading="lazy" /><span>{label} <ArrowUpRight size={13}/></span></a>)}
           </div>
           <div className="showcase-project-footer"><div className="showcase-stack">PHP / MySQL <span>·</span> JavaScript <span>·</span> p5.js</div><a href="https://github.com/Luftmensch-yys/p5r-phantom-forum" target="_blank" rel="noopener noreferrer"><Github size={16}/> 查看源码与运行说明 <ArrowUpRight size={14}/></a></div>
           <p className="showcase-data-note">以上为本地运行截图，账号、留言和投票均为演示数据。当前提供界面展示与源码，完整交互需在 PHP + MySQL 环境运行。</p>
