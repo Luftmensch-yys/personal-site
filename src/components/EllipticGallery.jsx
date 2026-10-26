@@ -185,13 +185,22 @@ export default function EllipticGallery({ onActiveCardChange, onLeave }) {
                 }}
                 onClick={() => handleCardClick(item, itemIndex)}
               >
-                <img src={item.img} alt={item.label} draggable={false} className="h-full w-full object-cover object-center" />
-                <span className="absolute inset-0 bg-black/35 transition duration-300 group-hover:bg-black/20" />
+                <span
+                  role="img"
+                  aria-label={item.label}
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: `url("${item.img}")`,
+                    backgroundSize: `${1448 / item.coverCrop[2] * 100}% ${1086 / item.coverCrop[3] * 100}%`,
+                    backgroundPosition: `${item.coverCrop[0] / (1448 - item.coverCrop[2]) * 100}% ${item.coverCrop[1] / (1086 - item.coverCrop[3]) * 100}%`,
+                  }}
+                />
+                <span className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
                 <span className="absolute inset-x-4 top-4 flex items-center justify-between text-[10px] tracking-[0.22em] text-white/70 uppercase opacity-0 transition duration-300 group-hover:opacity-100 md:opacity-100">
                   <span>{String(item.sourceIndex + 1).padStart(2, '0')}</span>
                   <span>{isActive ? 'Enter' : 'Focus'}</span>
                 </span>
-                <span className="absolute inset-x-5 top-1/2 -translate-y-1/2 text-center font-serif text-[clamp(1.05rem,2vw,1.55rem)] font-semibold leading-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.7)]">
+                <span className="absolute inset-x-5 top-[68%] -translate-y-1/2 text-center font-geist text-[clamp(1.05rem,2vw,1.55rem)] font-medium leading-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,.7)]">
                   {item.label === 'More' ? 'See more' : item.label}
                 </span>
               </button>
