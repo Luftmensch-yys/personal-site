@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="init.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -285,36 +286,128 @@
         <span>Click to focus</span>
     </div>
 
-    <script>
+    <script type="module">
+        import { MEDIA_BASE } from "./src/media-config.js";
         const canvas = document.getElementById('infiniteCanvas');
         const world = document.getElementById('canvasWorld');
         const zoomText = document.getElementById('zoomText');
         const zoomFill = document.getElementById('zoomFill');
 
         const media = [
-            { src: 'ff7/rb.jpg', label: 'visual 01', w: 360, h: 235 },
-            { src: 'ff7/re.jpg', label: 'visual 02', w: 250, h: 330 },
-            { src: 'ff7/c1.jpg', label: 'visual 03', w: 300, h: 220 },
-            { src: 'ff7/b.jpg', label: 'visual 04', w: 230, h: 320 },
-            { src: 'ff7/a1.jpg', label: 'visual 05', w: 310, h: 230 },
-            { src: 'ff7/a2.jpg', label: 'visual 06', w: 245, h: 305 },
-            { src: 'ff7/t3.jpg', label: 'visual 07', w: 350, h: 220 },
-            { src: 'ff7/t1.jpg', label: 'visual 08', w: 240, h: 310 },
-            { src: 'ff7/c2.jpg', label: 'visual 09', w: 310, h: 230 },
-            { src: 'ff7/a.png', label: 'sketch 01', w: 230, h: 290 },
-            { src: 'ff7/c.png', label: 'sketch 02', w: 260, h: 260 },
-            { src: 'ff7/s.png', label: 'ambient 01', w: 340, h: 225 },
-            { src: 'ff7/tt.png', label: 'composition', w: 260, h: 335 },
-        ];
+  {
+    "src": "002dd6cb43232e0b63b3596f5bc9eb39.jpg",
+    "label": "摄影 01",
+    "w": 340,
+    "h": 235
+  },
+  {
+    "src": "0cac8d6726093458f5c9421fb354f75c.jpg",
+    "label": "摄影 02",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "2a32fbf5d9452e0a29518ae052ddbc32.jpg",
+    "label": "摄影 03",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "2c64b7aec5f4aa45a8f3f5554a0f724a.jpg",
+    "label": "摄影 04",
+    "w": 340,
+    "h": 235
+  },
+  {
+    "src": "308a5d7de56fa076284a7354dbe0d691.jpg",
+    "label": "摄影 05",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "447d88c24eb7e822ec4f9c458b218005.jpg",
+    "label": "摄影 06",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "4fdefb341510e442fd097af6a3c05c90.jpg",
+    "label": "摄影 07",
+    "w": 340,
+    "h": 235
+  },
+  {
+    "src": "565892886505a32c19ddd98581c4e7e9.jpg",
+    "label": "摄影 08",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "6f153901aa7dcabdd0b232d6f6a85c25.jpg",
+    "label": "摄影 09",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "9004bdc1ede18fe3ebb7d6259f9c7383.jpg",
+    "label": "摄影 10",
+    "w": 340,
+    "h": 235
+  },
+  {
+    "src": "afd3005e88474dba3c02a9e7c71e35bc.jpg",
+    "label": "摄影 11",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "c0a704802a4c26c2850a53a7d45b9998.jpg",
+    "label": "摄影 12",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "c2bac0c08c42089506d4e1b4b2fbc470.jpg",
+    "label": "摄影 13",
+    "w": 340,
+    "h": 235
+  },
+  {
+    "src": "c5e8e6759b167e6c25823c9671730372.jpg",
+    "label": "摄影 14",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "ce4e621d79949e49d3e38d3b33695457.jpg",
+    "label": "摄影 15",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "ec7ab02dd410cdcf7067be84ab60df6f.jpg",
+    "label": "摄影 16",
+    "w": 340,
+    "h": 235
+  },
+  {
+    "src": "ed75be7408ea8eb6e66743643e34f9f8.jpg",
+    "label": "摄影 17",
+    "w": 260,
+    "h": 325
+  },
+  {
+    "src": "f1868e42da6becc72a06949ba1b10e6b.jpg",
+    "label": "摄影 18",
+    "w": 260,
+    "h": 325
+  }
+].map(item => ({ ...item, src: `${MEDIA_BASE}/photo/${encodeURIComponent(item.src)}` }));
 
-        const basePositions = [
-            [-760, -460, -120], [-330, -510, 40], [130, -430, -70], [560, -500, 120], [930, -330, -40],
-            [-950, -80, 80], [-520, -120, -30], [-90, -60, 150], [330, -110, -100], [760, -20, 45],
-            [-720, 360, 130], [-260, 280, -90], [170, 340, 40], [620, 280, -140], [1040, 360, 100],
-        ];
+        const basePositions = media.map((_, i) => [(i % 6 - 2.5) * 350, (Math.floor(i / 6) - 1) * 390, (i % 3 - 1) * 80]);
 
-        const tileW = 1480;
-        const tileH = 980;
+        const tileW = 2100;
+        const tileH = 1170;
         const state = {
             x: 0,
             y: 0,

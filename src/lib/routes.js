@@ -4,6 +4,7 @@ export const ROUTES = {
   about: 'about.html',
   contact: 'contact.html',
   gallery: 'gallery.html',
+  films: 'films.html',
   game: 'games.html',
   music: 'music.html',
   craft: 'handmake.html',
@@ -20,6 +21,13 @@ export const NAV_ITEMS = [
 ]
 
 export const PROJECT_ITEMS = [
+  {
+    title: 'Moving Images',
+    label: '视频剪辑',
+    desc: '把日常、风景与情绪剪进时间里。个人影像与工作期间参与的剪辑作品。',
+    href: ROUTES.films,
+    img: 'video-posters/see you again.jpg',
+  },
   {
     title: 'Visual Archive',
     label: '绘画摄影',

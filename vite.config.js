@@ -14,6 +14,7 @@ export default defineConfig({
         interests: 'project.html',
         message: 'contact.html',
         gallery: 'gallery.html',
+        films: 'films.html',
         music: 'music.html',
         craft: 'handmake.html',
         modeling: 'modeling.html',
