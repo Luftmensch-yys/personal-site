@@ -1,0 +1,235 @@
+[
+  {
+    "name": "day1上午数据清洗及结构化",
+    "nodes": [
+      {
+        "title": "用户输入",
+        "type": "start"
+      },
+      {
+        "title": "结构化文档提取器",
+        "type": "document-extractor"
+      },
+      {
+        "title": "半结构化文档提取器",
+        "type": "document-extractor"
+      },
+      {
+        "title": "图片/文档分流",
+        "type": "if-else"
+      },
+      {
+        "title": "图片识别",
+        "type": "llm"
+      },
+      {
+        "title": "非结构化文档提取器",
+        "type": "document-extractor"
+      },
+      {
+        "title": "非结构化文本汇合",
+        "type": "variable-aggregator"
+      },
+      {
+        "title": "非结构化内容标准化",
+        "type": "llm"
+      },
+      {
+        "title": "数据解析与标准化",
+        "type": "code"
+      },
+      {
+        "title": "保存为结构化.json文件",
+        "type": "tool"
+      },
+      {
+        "title": "LLM-数据质量报告",
+        "type": "llm"
+      },
+      {
+        "title": "LLM-抽取字段字典与样例",
+        "type": "llm"
+      },
+      {
+        "title": "保存为数据质量报告文件",
+        "type": "tool"
+      },
+      {
+        "title": "保存为抽取字段字典与样例文件",
+        "type": "tool"
+      },
+      {
+        "title": "回复报告/字段字典样例",
+        "type": "answer"
+      }
+    ]
+  },
+  {
+    "name": "day1下午可视化看板",
+    "nodes": [
+      {
+        "title": "用户输入",
+        "type": "start"
+      },
+      {
+        "title": "LLM",
+        "type": "llm"
+      },
+      {
+        "title": "直接回复",
+        "type": "answer"
+      },
+      {
+        "title": "文档提取器",
+        "type": "document-extractor"
+      },
+      {
+        "title": "LLM 2",
+        "type": "llm"
+      },
+      {
+        "title": "保存为文件",
+        "type": "tool"
+      },
+      {
+        "title": "直接回复 2",
+        "type": "answer"
+      }
+    ]
+  },
+  {
+    "name": "day1下午数据分析报告",
+    "nodes": [
+      {
+        "title": "用户输入",
+        "type": "start"
+      },
+      {
+        "title": "LLM",
+        "type": "llm"
+      },
+      {
+        "title": "直接回复",
+        "type": "answer"
+      },
+      {
+        "title": "文档提取器",
+        "type": "document-extractor"
+      },
+      {
+        "title": "LLM-数据分析",
+        "type": "llm"
+      },
+      {
+        "title": "保存结果",
+        "type": "tool"
+      },
+      {
+        "title": "直接回复 2",
+        "type": "answer"
+      }
+    ]
+  },
+  {
+    "name": "day2上午AI生图",
+    "nodes": [
+      {
+        "title": "用户输入",
+        "type": "start"
+      },
+      {
+        "title": "问题分类器",
+        "type": "question-classifier"
+      },
+      {
+        "title": "景点宣传图生成系统提示词",
+        "type": "template-transform"
+      },
+      {
+        "title": "虚拟行程预览图系统提示词",
+        "type": "template-transform"
+      },
+      {
+        "title": "季节氛围图系统提示词",
+        "type": "template-transform"
+      },
+      {
+        "title": "当地特色系统提示词",
+        "type": "template-transform"
+      },
+      {
+        "title": "海报系统提示词",
+        "type": "template-transform"
+      },
+      {
+        "title": "变量聚合器",
+        "type": "variable-aggregator"
+      },
+      {
+        "title": "为LLM-提取纯净url  (1)",
+        "type": "llm"
+      },
+      {
+        "title": "ent生图 (1)",
+        "type": "http-request"
+      },
+      {
+        "title": "图片下载器",
+        "type": "tool"
+      },
+      {
+        "title": "直接回复 6",
+        "type": "answer"
+      }
+    ]
+  },
+  {
+    "name": "day2上午智能体问答",
+    "nodes": [
+      {
+        "title": "用户输入",
+        "type": "start"
+      },
+      {
+        "title": "LLM",
+        "type": "llm"
+      },
+      {
+        "title": "直接回复",
+        "type": "answer"
+      },
+      {
+        "title": "问题分类器",
+        "type": "question-classifier"
+      },
+      {
+        "title": "获取当前时间",
+        "type": "tool"
+      },
+      {
+        "title": "知识检索",
+        "type": "knowledge-retrieval"
+      },
+      {
+        "title": "LLM-日常问题",
+        "type": "llm"
+      },
+      {
+        "title": "LLM-旅游相关问题",
+        "type": "llm"
+      },
+      {
+        "title": "日常回复",
+        "type": "answer"
+      },
+      {
+        "title": "保存为文件",
+        "type": "tool"
+      },
+      {
+        "title": "直接回复 3",
+        "type": "answer"
+      }
+    ]
+  }
+]

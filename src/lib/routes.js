@@ -64,7 +64,7 @@ export const PROJECT_ITEMS = [
   {
     title: 'PROJECT SHOWCASE',
     label: '项目展示',
-    desc: '用可以体验的项目呈现解决问题的过程：从租房与通勤决策，到更多应用实践。',
+    desc: 'Dify 工作流、知识库智能客服、简历初筛与数据看板，把真实问题变成应用实践。',
     href: ROUTES.showcase,
     img: 'project-covers/ascii-dark-board.png',
     coverCrop: [526, 555, 398, 480],

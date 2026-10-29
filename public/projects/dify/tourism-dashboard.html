@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅游景点数据看板</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            width: 95%;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        #filter-bar {
+            grid-column: 1 / -1;
+            background-color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        #filter-bar label {
+            font-weight: bold;
+            color: #555;
+        }
+        #filter-bar select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            min-width: 150px;
+        }
+        .echarts-chart {
+            width: 100%;
+            height: 350px;
+        }
+    </style>
+</head>
+<body><aside style="padding:14px 24px;background:#fff8db;color:#5d4e20;font:14px/1.8 system-ui">Dify 工作流历史输出 · 旅游数据练习样本。地名、分类与价格存在质量问题，图中的画像和趋势为示例推导，不作为真实旅游统计或出行建议。 <a href="../../showcase.html#dify">返回项目展示</a></aside>
+    <div class="container">
+        <div id="filter-bar">
+            <label for="district-filter">区域:</label>
+            <select id="district-filter">
+                <option value="">全部区域</option>
+            </select>
+            <label for="category-filter">类别:</label>
+            <select id="category-filter">
+                <option value="">所有类别</option>
+            </select>
+        </div>
+
+        <div class="card">
+            <h3>市场概览</h3>
+            <div id="market-overview-chart" class="echarts-chart"></div>
+        </div>
+        <div class="card">
+            <h3>用户画像 (Top 10 标签)</h3>
+            <div id="user-profile-chart" class="echarts-chart"></div>
+        </div>
+        <div class="card">
+            <h3>竞品对比 (Top 5 访问量)</h3>
+            <div id="competitor-comparison-chart" class="echarts-chart"></div>
+        </div>
+        <div class="card">
+            <h3>模拟趋势（非预测） (未来 7 天访问量)</h3>
+            <div id="trend-prediction-chart" class="echarts-chart"></div>
+        </div>
+    </div>
+
+    <script>
+        const rawData = [
+            {
+                "id": "SPOT_001",
+                "name": "松鼠部落森林假日公园",
+                "province": "河南省",
+                "city": "河南·郑州·荥阳市",
+                "district": "荥阳市",
+                "type": "历史遗迹",
+                "base_price": 145.0,
+                "rating": 1.0,
+                "total_visits": 23251,
+                "hotness": 85.0219,
+                "tags": ["历史科普", "文化古迹"]
+            },
+            {
+                "id": "SPOT_002",
+                "name": "城市大峡谷景区",
+                "province": "重庆市",
+                "city": "重庆·重庆·黔江区",
+                "district": "黔江区",
+                "type": "历史遗迹",
+                "base_price": 67.0,
+                "rating": 1.0,
+                "total_visits": 44716,
+                "hotness": 98.0,
+                "tags": ["文化古迹", "heritage", "文物展览"]
+            },
+            {
+                "id": "SPOT_003",
+                "name": "南普陀寺",
+                "province": "北京市",
+                "city": "北京·北京·天安门广场",
+                "district": "天安门广场",
+                "type": "人文景观",
+                "base_price": 229.0,
+                "rating": 2.0,
+                "total_visits": 100,
+                "hotness": 10.0,
+                "tags": ["文化体验", "传统民俗"]
+            },
+            {
+                "id": "SPOT_004",
+                "name": "瘦西湖风景区",
+                "province": "江苏省",
+                "city": "扬州市",
+                "district": "扬州市",
+                "type": "自然景观",
+                "base_price": 100.0,
+                "rating": 4.2,
+                "total_visits": 5563,
+                "hotness": 50.0,
+                "tags": ["户外徒步", "生态休闲"]
+            },
+            {
+                "id": "SPOT_005",
+                "name": "鼎湖山",
+                "province": "广东省",
+                "city": "广东·肇庆·鼎湖区",
+                "district": "鼎湖区",
+                "type": "自然景观",
+                "base_price": 50.0,
+                "rating": 2.6,
+                "total_visits": 0,
+                "hotness": 0.0,
+                "tags": ["户外徒步", "自然风光"]
+            },
+            {
+                "id": "SPOT_006",
+                "name": "十里画廊",
+                "province": "湖南省",
+                "city": "湖南·张家界·张家界国家森林公园",
+                "district": "张家界国家森林公园",
+                "type": "主题公园",
+                "base_price": 265.0,
+                "rating": 2.0,
+                "total_visits": 40754,
+                "hotness": 88.0,
+                "tags": ["家庭出游", "亲子友好", "娱乐刺激", "沉浸式"]
+            },
+            {
+                "id": "SPOT_007",
+                "name": "大唐芙蓉园《大唐追梦》",
+                "province": "内蒙古自治区",
+                "city": "内蒙古·包头·达尔罕旗",
+                "district": "达尔罕旗",
+                "type": "自然景观",
+                "base_price": 282.0,
+                "rating": 1.5,
+                "total_visits": 26851,
+                "hotness": 70.0,
+                "tags": ["摄影天堂", "山水风光", "生态休闲"]
+            },
+            {
+                "id": "SPOT_008",
+                "name": "天坛公园",
+                "province": "北京市",
+                "city": "北京·北京·昌平区",
+                "district": "昌平区",
+                "type": "历史遗迹",
+                "base_price": 15.0,
+                "rating": 1.6,
+                "total_visits": 8657,
+                "hotness": 40.0,
+                "tags": ["文化古迹", "文物展览"]
+            },
+            {
+                "id": "SPOT_009",
+                "name": "龙宫",
+                "province": "贵州省",
+                "city": "贵州·安顺·镇宁县",
+                "district": "镇宁县",
+                "type": "人文景观",
+                "base_price": 56.0,
+                "rating": 1.5,
+                "total_visits": 47196,
+                "hotness": 99.0,
+                "tags": ["艺术鉴赏", "宗教文化", "文化体验"]
+            },
+            {
+                "id": "SPOT_010",
+                "name": "圆明园遗址公园",
+                "province": "北京市",
+                "city": "北京·海淀区",
+                "district": "海淀区",
+                "type": "历史遗迹",
+                "base_price": 10.0,
+                "rating": 2.7,
+                "total_visits": 5323,
+                "hotness": 30.0,
+                "tags": ["历史科普", "heritage", "文化古迹", "文物展览"]
+            },
+            {
+                "id": "SPOT_011",
+                "name": "望仙谷",
+                "province": "四川省",
+                "city": "四川·成都·大邑县",
+                "district": "大邑县",
+                "type": "人文景观",
+                "base_price": 52.97,
+                "rating": 1.4,
+                "total_visits": 11253,
+                "hotness": 55.0,
+                "tags": ["宗教文化", "艺术鉴赏", "人文历史", "传统民俗"]
+            },
+            {
+                "id": "SPOT_012",
+                "name": "澳门旅游观光塔",
+                "province": "澳门特别行政区",
+                "city": "澳门·澳门",
+                "district": "澳门",
+                "type": "自然景观",
+                "base_price": 83.78,
+                "rating": 1.8,
+                "total_visits": 31284,
+                "hotness": 75.0,
+                "tags": ["山水风光", "生态休闲"]
+            },
+            {
+                "id": "SPOT_013",
+                "name": "喀什艾提尕尔清真寺",
+                "province": "新疆维吾尔自治区",
+                "city": "新疆·喀什·喀什市",
+                "district": "喀什市",
+                "type": "人文景观",
+                "base_price": 187.6,
+                "rating": 2.2,
+                "total_visits": 1,
+                "hotness": 5.0,
+                "tags": ["艺术鉴赏", "宗教文化"]
+            },
+            {
+                "id": "SPOT_014",
+                "name": "沙坡头旅游区",
+                "province": "宁夏回族自治区",
+                "city": "宁夏·中卫·沙坡头区",
+                "district": "沙坡头区",
+                "type": "自然景观",
+                "base_price": 58.42,
+                "rating": 2.5,
+                "total_visits": 5545,
+                "hotness": 35.0,
+                "tags": ["户外徒步", "摄影天堂", "山水风光", "自然风光"]
+            },
+            {
+                "id": "SPOT_015",
+                "name": "天津之眼摩天轮",
+                "province": "天津市",
+                "city": "天津·红桥区",
+                "district": "红桥区",
+                "type": "人文景观",
+                "base_price": 60.0,
+                "rating": 3.4,
+                "total_visits": 5076,
+                "hotness": 32.0,
+                "tags": ["人文历史", "宗教文化"]
+            },
+            {
+                "id": "SPOT_016",
+                "name": "千年瑶寨",
+                "province": "广东省",
+                "city": "广东·清远·连南瑶族",
+                "district": "连南瑶族",
+                "type": "主题公园",
+                "base_price": 130.95,
+                "rating": 1.8,
+                "total_visits": 332,
+                "hotness": 15.0,
+                "tags": ["家庭出游", "沉浸式", "主题体验"]
+            },
+            {
+                "id": "SPOT_017",
+                "name": "纳木那尼",
+                "province": "西藏自治区",
+                "city": "西藏·阿里·普兰县",
+                "district": "普兰县",
+                "type": "历史遗迹",
+                "base_price": 254.63,
+                "rating": 1.6,
+                "total_visits": 94,
+                "hotness": 12.0,
+                "tags": ["文化古迹", "古建筑", "文物展览", "历史科普"]
+            },
+            {
+                "id": "SPOT_018",
+                "name": "圣母堂",
+                "province": "澳门特别行政区",
+                "city": "澳门·澳门·澳门半岛",
+                "district": "澳门半岛",
+                "type": "主题公园",
+                "base_price": 135.0,
+                "rating": 0.6,
+                "total_visits": 0,
+                "hotness": 0.0,
+                "tags": ["主题体验", "娱乐刺激", "沉浸式", "亲子友好"]
+            },
+            {
+                "id": "SPOT_019",
+                "name": "法门寺",
+                "province": "陕西省",
+                "city": "陕西·宝鸡·扶风县",
+                "district": "扶风县",
+                "type": "历史遗址",
+                "base_price": 120.0,
+                "rating": 2.9,
+                "total_visits": 21735,
+                "hotness": 65.0,
+                "tags": ["考古价值", "文化传承", "遗址参观", "历史遗迹"]
+            },
+            {
+                "id": "SPOT_020",
+                "name": "万州大瀑布群景区",
+                "province": "重庆市",
+                "city": "重庆·重庆·万州区",
+                "district": "万州区",
+                "type": "主题公园",
+                "base_price": 205.0,
+                "rating": 1.5,
+                "total_visits": 42891,
+                "hotness": 95.0,
+                "tags": ["家庭出游", "亲子友好", "沉浸式"]
+            }
+        ];
+
+        // Data Transformation and Cleaning
+        const processedData = rawData.map(item => {
+            return {
+                ...item,
+                district: item.city.split('·').pop() || item.city, // Extract district from city, fallback to city if no '·'
+                base_price: item.base_price === null ? 0 : item.base_price,
+                rating: item.rating === null ? 0 : item.rating,
+                total_visits: item.total_visits === null ? 0 : item.total_visits,
+                hotness: item.hotness === null ? 0 : item.hotness
+            };
+        });
+
+        // Calculate hotness based on total_visits
+        const maxVisits = Math.max(...processedData.map(d => d.total_visits));
+        processedData.forEach(d => {
+            d.hotness = maxVisits > 0 ? (d.total_visits / maxVisits * 100).toFixed(2) : 0;
+        });
+
+        // Populate filters
+        const districtFilter = document.getElementById('district-filter');
+        const categoryFilter = document.getElementById('category-filter');
+
+        const districts = [...new Set(processedData.map(item => item.district))].sort();
+        const categories = [...new Set(processedData.map(item => item.type))].sort();
+
+        districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district;
+            option.textContent = district;
+            districtFilter.appendChild(option);
+        });
+
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            categoryFilter.appendChild(option);
+        });
+
+        // Initialize ECharts instances
+        const marketOverviewChart = echarts.init(document.getElementById('market-overview-chart'));
+        const userProfileChart = echarts.init(document.getElementById('user-profile-chart'));
+        const competitorComparisonChart = echarts.init(document.getElementById('competitor-comparison-chart'));
+        const trendPredictionChart = echarts.init(document.getElementById('trend-prediction-chart'));
+
+        // Function to update charts
+        function updateCharts(data) {
+            // 1. Market Overview (Scatter Chart)
+            const marketOverviewOption = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                        return `
+                            <strong>${params.data.name}</strong><br/>
+                            城市: ${params.data.city}<br/>
+                            价格: ¥${params.data.base_price}<br/>
+                            评分: ${params.data.rating}<br/>
+                            访问量: ${params.data.total_visits}
+                        `;
+                    }
+                },
+                xAxis: {
+                    type: 'value',
+                    name: '门票价格 (元)',
+                    nameLocation: 'middle',
+                    nameGap: 30,
+                    splitLine: { show: false }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '评分',
+                    nameLocation: 'middle',
+                    nameGap: 30,
+                    min: 0,
+                    max: 5,
+                    splitLine: { show: true, lineStyle: { type: 'dashed', color: '#eee' } }
+                },
+                series: [{
+                    name: '景点',
+                    type: 'scatter',
+                    symbolSize: function (val) {
+                        // Scale bubble size based on hotness (total_visits)
+                        const maxHotness = 100; // Assuming hotness is scaled to 0-100
+                        const minSize = 5;
+                        const maxSize = 30;
+                        return minSize + (maxSize - minSize) * (val[2] / maxHotness);
+                    },
+                    data: data.map(item => [item.base_price, item.rating, item.hotness, item]),
+                    itemStyle: {
+                        color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [{
+                            offset: 0, color: 'rgba(126, 203, 255, 0.7)'
+                        }, {
+                            offset: 1, color: 'rgba(126, 203, 255, 0.3)'
+                        }]),
+                        opacity: 0.8
+                    }
+                }]
+            };
+            marketOverviewChart.setOption(marketOverviewOption);
+
+            // 2. User Profile (Bar Chart for Top 10 Tags)
+            const tagCounts = {};
+            data.forEach(item => {
+                item.tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            });
+            const sortedTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            const userProfileOption = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    name: '数量',
+                    nameLocation: 'middle',
+                    nameGap: 30,
+                    axisLabel: { formatter: '{value}' }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: sortedTags.map(item => item[0]),
+                    name: '标签',
+                    nameLocation: 'middle',
+                    nameGap: 30,
+                    axisLabel: { interval: 0, rotate: 30 }
+                },
+                series: [{
+                    type: 'bar',
+                    barWidth: '60%',
+                    data: sortedTags.map(item => item[1]),
+                    itemStyle: {
+                        color: '#5470c6', // Blue
+                        borderRadius: [0, 5, 5, 0]
+                    }
+                }]
+            };
+            userProfileChart.setOption(userProfileOption);
+
+            // 3. Competitor Comparison (Radar Chart)
+            const top5Visits = [...data].sort((a, b) => b.total_visits - a.total_visits).slice(0, 5);
+            const competitorComparisonOption = {
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function (params) {
+                        let tooltipContent = `${params[0].name}<br/>`;
+                        params.forEach(p => {
+                            tooltipContent += `${p.marker}${p.seriesName}: ${p.value}<br/>`;
+                        });
+                        return tooltipContent;
+                    }
+                },
+                radar: {
+                    indicator: [
+                        { name: '价格', max: 300 },
+                        { name: '评分', max: 5 },
+                        { name: '热度', max: 100 },
+                        { name: '访问量', max: 50000 },
+                        { name: '标签丰富度', max: 5 }
+                    ],
+                    center: ['50%', '50%'],
+                    radius: '70%'
+                },
+                series: [{
+                    name: '景点数据',
+                    type: 'radar',
+                    data: top5Visits.map(item => ({
+                        value: [
+                            item.base_price || 0,
+                            item.rating || 0,
+                            item.hotness || 0,
+                            item.total_visits || 0,
+                            item.tags.length || 0
+                        ],
+                        name: item.name,
+                        areaStyle: {
+                            color: 'rgba(84, 112, 198, 0.3)' // Blue tint
+                        }
+                    })),
+                    tooltip: {
+                        formatter: function (params) {
+                            const dataItem = top5Visits.find(d => d.name === params.name);
+                            if (!dataItem) return '';
+
+                            let tooltipHtml = `<strong>${params.name}</strong><br/>`;
+                            const indicators = competitorComparisonOption.radar.indicator;
+                            const values = params.value;
+
+                            values.forEach((value, index) => {
+                                const indicatorName = indicators[index].name;
+                                let formattedValue = value;
+
+                                if (indicatorName === '价格') {
+                                    formattedValue = `¥${value.toFixed(2)}`;
+                                } else if (indicatorName === '评分') {
+                                    formattedValue = `${value.toFixed(1)}`;
+                                } else if (indicatorName === '访问量') {
+                                    formattedValue = `${value}`;
+                                } else if (indicatorName === '标签丰富度') {
+                                    formattedValue = `${value}`;
+                                }
+
+                                tooltipHtml += `${indicatorName}: ${formattedValue}<br/>`;
+                            });
+                            return tooltipHtml;
+                        }
+                    }
+                }]
+            };
+            competitorComparisonChart.setOption(competitorComparisonOption);
+
+            // 4. Trend Prediction (Smooth Line Chart)
+            const today = new Date();
+            const dates = [];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                dates.push(date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }));
+            }
+
+            // Simulate future visits based on average and some fluctuation
+            const avgVisits = data.reduce((sum, item) => sum + item.total_visits, 0) / data.length || 0;
+            const predictedVisits = dates.map((_, i) => {
+                const base = avgVisits * (1 + Math.random() * 0.2 - 0.1); // Base fluctuation
+                const trend = Math.sin(i / 3) * (avgVisits * 0.1); // Add some sinusoidal trend
+                return Math.max(0, Math.round(base + trend));
+            });
+
+            const trendPredictionOption = {
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function (params) {
+                        return `${params[0].name}<br/>模拟访问量: ${params[0].value}`;
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: dates,
+                    name: '日期',
+                    nameLocation: 'middle',
+                    nameGap: 30,
+                    axisLabel: { interval: 0 }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '模拟访问量',
+                    nameLocation: 'middle',
+                    nameGap: 30,
+                    axisLabel: { formatter: '{value}' }
+                },
+                series: [{
+                    data: predictedVisits,
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
+                        color: '#5470c6' // Blue
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0, color: 'rgba(84, 112, 198, 0.3)'
+                        }, {
+                            offset: 1, color: 'rgba(84, 112, 198, 0)'
+                        }])
+                    },
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#5470c6'
+                    }
+                }]
+            };
+            trendPredictionChart.setOption(trendPredictionOption);
+        }
+
+        // Initial chart rendering
+        updateCharts(processedData);
+
+        // Event listeners for filters
+        districtFilter.addEventListener('change', filterData);
+        categoryFilter.addEventListener('change', filterData);
+
+        function filterData() {
+            const selectedDistrict = districtFilter.value;
+            const selectedCategory = categoryFilter.value;
+
+            const filteredData = processedData.filter(item => {
+                const districtMatch = !selectedDistrict || item.district === selectedDistrict;
+                const categoryMatch = !selectedCategory || item.type === selectedCategory;
+                return districtMatch && categoryMatch;
+            });
+
+            updateCharts(filteredData);
+        }
+
+        // Resize charts on window resize
+        window.addEventListener('resize', () => {
+            marketOverviewChart.resize();
+            userProfileChart.resize();
+            competitorComparisonChart.resize();
+            trendPredictionChart.resize();
+        });
+    </script>
+</body>
+</html>

@@ -6,6 +6,7 @@ import useEnterTransition from './hooks/useEnterTransition'
 import { ROUTES } from './lib/routes'
 import { goToPage } from './lib/navigation'
 import './showcase.css'
+import { DifyCase, RagCase, ScreeningCase } from './AIProjectCases'
 
 const BASE = import.meta.env.BASE_URL
 const DEMO = `${BASE}projects/shenzhen-rental/index.html`
@@ -24,13 +25,17 @@ export default function ShowcaseApp() {
       <div className="showcase-content">
         <header className="showcase-hero page-block">
           <a className="showcase-back" href={ROUTES.project} onClick={(event) => { setLeaving(true); goToPage(event, ROUTES.project) }}><ArrowLeft size={15} /> 返回作品分类</a>
-          <p className="showcase-eyebrow">Selected projects · 02</p>
+          <p className="showcase-eyebrow">Selected projects · 05</p>
           <h1>项目展示<span>Projects in practice.</span></h1>
-          <p className="showcase-intro">把实际问题变成可以体验的工具。这里记录我的应用项目，以及它们解决问题的方式。</p>
+          <p className="showcase-intro">从 AI 工作流与知识问答，到业务应用与数据可视化。用实际配置、输出和界面，记录我把问题变成作品的过程。</p>
+          <nav className="case-nav" aria-label="项目快速导航"><a href="#dify">Dify 工作流</a><a href="#rag">知识库客服</a><a href="#screening">简历初筛</a><a href="#rental">租房看板</a><a href="#p5r">P5R 社区</a></nav>
         </header>
 
-        <article className="showcase-project page-block" aria-labelledby="rental-title">
-          <div className="showcase-project-heading"><span>01 / DATA VISUALIZATION</span><span>深圳 · 租房与通勤</span></div>
+        <DifyCase />
+        <RagCase />
+        <ScreeningCase />
+        <article id="rental" className="showcase-project ai-case page-block" aria-labelledby="rental-title">
+          <div className="showcase-project-heading"><span>04 / DATA VISUALIZATION</span><span>深圳 · 租房与通勤</span></div>
           <div className="showcase-summary">
             <div><h2 id="rental-title">深圳租房决策看板</h2><p className="showcase-subtitle">在租金、收入和通勤之间，找到更适合自己的选择。</p></div>
             <a className="showcase-action" href={DEMO} target="_blank" rel="noopener noreferrer">在线体验 <ArrowUpRight size={19} /></a>
@@ -48,7 +53,7 @@ export default function ShowcaseApp() {
           <p className="showcase-data-note">当前为静态样本演示，数据不实时更新。通勤以南山高新园为终点，评分按项目设定的权重计算。</p>
         </article>
         <article id="p5r" className="showcase-project page-block p5r-project" aria-labelledby="p5r-title">
-          <div className="showcase-project-heading"><span>02 / INTERACTIVE COMMUNITY</span><span>P5R · 同好交流</span></div>
+          <div className="showcase-project-heading"><span>05 / INTERACTIVE COMMUNITY</span><span>P5R · 同好交流</span></div>
           <div className="showcase-summary">
             <div><h2 id="p5r-title">P5R · 怪盗留言板</h2><p className="showcase-subtitle">从“你相信怪盗团存在吗”开始，让同好有话可聊。</p></div>
             <a className="showcase-action" href="https://github.com/Luftmensch-yys/p5r-phantom-forum" target="_blank" rel="noopener noreferrer">项目源码 <Github size={19} /></a>
