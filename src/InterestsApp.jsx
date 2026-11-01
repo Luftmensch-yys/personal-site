@@ -5,6 +5,7 @@ import PageWipe from './components/PageWipe'
 import EllipticGallery from './components/EllipticGallery'
 import useEnterTransition from './hooks/useEnterTransition'
 import { PROJECT_ITEMS } from './lib/routes'
+import ProjectIndex from './ProjectIndex'
 
 export default function InterestsApp() {
   const [leaving, setLeaving] = useState(false)
@@ -28,6 +29,7 @@ export default function InterestsApp() {
 
       <SiteNav active="project" />
       <PageWipe />
+      <a href="#all-projects" className="relative z-10 mx-auto mt-24 block w-fit rounded-full border border-neutral-200 px-5 py-2 text-sm text-neutral-600">查看全部应用项目 ↓</a>
 
       <div className="relative z-10 flex min-h-screen flex-col">
         <header className="page-block flex flex-[0.66] flex-col items-center justify-end px-6 pb-8 pt-24 text-center md:pb-10 md:pt-28">
@@ -53,6 +55,7 @@ export default function InterestsApp() {
           </p>
         </div>
       </div>
+      <ProjectIndex />
 
     </main>
   )

@@ -7,6 +7,7 @@ import { ROUTES } from './lib/routes'
 import { goToPage } from './lib/navigation'
 import './showcase.css'
 import { DifyCase, RagCase, ScreeningCase } from './AIProjectCases'
+import AdditionalCases from './AdditionalCases'
 
 const BASE = import.meta.env.BASE_URL
 const DEMO = `${BASE}projects/shenzhen-rental/index.html`
@@ -25,12 +26,13 @@ export default function ShowcaseApp() {
       <div className="showcase-content">
         <header className="showcase-hero page-block">
           <a className="showcase-back" href={ROUTES.project} onClick={(event) => { setLeaving(true); goToPage(event, ROUTES.project) }}><ArrowLeft size={15} /> 返回作品分类</a>
-          <p className="showcase-eyebrow">Selected projects · 05</p>
+          <p className="showcase-eyebrow">Application projects · 08</p>
           <h1>项目展示<span>Projects in practice.</span></h1>
           <p className="showcase-intro">从 AI 工作流与知识问答，到业务应用与数据可视化。用实际配置、输出和界面，记录我把问题变成作品的过程。</p>
-          <nav className="case-nav" aria-label="项目快速导航"><a href="#dify">Dify 工作流</a><a href="#rag">知识库客服</a><a href="#screening">简历初筛</a><a href="#rental">租房看板</a><a href="#p5r">P5R 社区</a></nav>
+          <nav className="case-nav" aria-label="项目快速导航"><a href="#career-agent">求职 Agent</a><a href="#dify">Dify 工作流</a><a href="#rag">知识库客服</a><a href="#screening">简历初筛</a><a href="#rental">租房看板</a><a href="#p5r">P5R 社区</a><a href="#coze">Coze 视频</a><a href="#story-to-gal">StoryToGal</a></nav>
         </header>
 
+        <AdditionalCases />
         <DifyCase />
         <RagCase />
         <ScreeningCase />
