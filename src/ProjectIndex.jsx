@@ -1,14 +1,11 @@
 import './project-index.css'
 
 export const APPLICATION_PROJECTS = [
-  { id: 'career-agent', tag: 'AI Agent / 产品设计', title: '本地求职 Agent', desc: '串联岗位要求分析、经历整理、简历编辑与投递准备，保留人工核对和进度记录。', status: '本地原型', href: 'showcase.html#career-agent' },
   { id: 'screening', tag: 'FDE / DDDR', title: '简历初筛辅助应用', desc: '从业务询问与需求澄清出发，通过 AI 协作实现辅助招聘初筛的应用。', status: '项目入口与实践说明', href: 'showcase.html#screening' },
   { id: 'rag', tag: 'LangGraph / Chroma', title: '多产品知识库智能客服', desc: '将知识检索、相关性判断、回答检查与问题改写连接起来，展示回答来源。', status: '架构与个人实现', href: 'showcase.html#rag' },
   { id: 'dify', tag: 'Dify / Workflow', title: '文档分析与智能体工作流', desc: '清洗、看板、报告、问答与生图五类工作流，附实际配置与历史输出。', status: '可交互成果与流程', href: 'showcase.html#dify' },
   { id: 'rental', tag: '数据分析 / ECharts', title: '深圳租房决策看板', desc: '把预算、租金负担与通勤偏好放在一起比较，辅助租房选择。', status: '静态样本在线体验', href: 'showcase.html#rental' },
   { id: 'p5r', tag: 'PHP / MySQL', title: 'P5R · 怪盗留言板', desc: '通过主题投票、留言回复与个人发言记录，为同好提供交流入口。', status: '实际界面与源码', href: 'showcase.html#p5r' },
-  { id: 'coze', tag: 'Coze / AIGC', title: '视频生成与字幕工作流', desc: '连接视频片段、TTS 配音、自动字幕与字幕烧录，组织批量视频制作流程。', status: '流程说明', href: 'showcase.html#coze' },
-  { id: 'story-to-gal', tag: '黑客松 / 团队协作', title: 'StoryToGal', desc: '参与团队项目，使用 AI 辅助编码完成前端页面与交互实现。', status: '个人前端贡献', href: 'showcase.html#story-to-gal' },
 ]
 
 export default function ProjectIndex() {
